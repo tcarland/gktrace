@@ -1,0 +1,29 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 10.00
+# Visual Studio 2008
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "gktrace", "gktrace.vcproj", "{13A33B06-C244-4670-B325-855F8E93137C}"
+	ProjectSection(ProjectDependencies) = postProject
+		{4E659449-5D19-49B2-AF6B-3BA64727C492} = {4E659449-5D19-49B2-AF6B-3BA64727C492}
+	EndProjectSection
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "tcanetpp", "..\common\tcanetpp\tcanetpp.vcproj", "{4E659449-5D19-49B2-AF6B-3BA64727C492}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Win32 = Debug|Win32
+		Release|Win32 = Release|Win32
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{13A33B06-C244-4670-B325-855F8E93137C}.Debug|Win32.ActiveCfg = Debug|Win32
+		{13A33B06-C244-4670-B325-855F8E93137C}.Debug|Win32.Build.0 = Debug|Win32
+		{13A33B06-C244-4670-B325-855F8E93137C}.Release|Win32.ActiveCfg = Release|Win32
+		{13A33B06-C244-4670-B325-855F8E93137C}.Release|Win32.Build.0 = Release|Win32
+		{4E659449-5D19-49B2-AF6B-3BA64727C492}.Debug|Win32.ActiveCfg = Debug|Win32
+		{4E659449-5D19-49B2-AF6B-3BA64727C492}.Debug|Win32.Build.0 = Debug|Win32
+		{4E659449-5D19-49B2-AF6B-3BA64727C492}.Release|Win32.ActiveCfg = Release|Win32
+		{4E659449-5D19-49B2-AF6B-3BA64727C492}.Release|Win32.Build.0 = Release|Win32
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+EndGlobal
