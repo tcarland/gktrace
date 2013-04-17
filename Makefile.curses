@@ -1,5 +1,5 @@
 ifdef TCAMAKE_PROJECT
-    TOPDIR = ..
+    TOPDIR = ../..
 else
     TOPDIR = .
 endif
@@ -11,6 +11,7 @@ NEED_TCANETPP = 1
 NEED_PTHREADS = 1
 NEED_NCURSES = 1
 NEED_HEXES = 1
+NEED_LIBRT = 1
 
 ifdef TNMS_DEBUG
 OPT_FLAGS = 	-g
@@ -22,21 +23,21 @@ INCLUDES=       -I.
 LIBS=
 LFLAGS=		
 
-GKTRACE=	gktrace
+GKTRACE=	gktrace-hex
 
 BIN=		$(GKTRACE)
 
-OBJS=		gktrace.o
+OBJS=		gktrace-hex.o
 
 ALL_OBJS=	$(OBJS) $(COBJS)
 ALL_BINS=	$(BIN)
 
-all: gktrace
+all: gktrace-hex
 
 include $(TOPDIR)/tcamake/project_defs
 
 
-gktrace: $(OBJS)
+gktrace-hex: $(OBJS)
 	$(make-cxxbin-rule)
 	@echo
 

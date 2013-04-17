@@ -50,7 +50,7 @@ using namespace tcanetpp;
 #define TR_PORT_SRC     33655
 
 
-const char* Version = "v0.27";
+const char* Version = "v0.28";
 bool        Alarm   = false;
 int         Pid     = 0;
 
@@ -100,8 +100,8 @@ struct IcmpResponse {
 void version()
 {
     std::cout << "gktrace " << Version
-              << ", Copyright (C) 2010, Charlton Technology" << std::endl
-              << "  by Timothy C. Arland (tca@charltontechnology.net)" << std::endl << std::endl;
+              << ", Copyright (C) 2010, Charlton Technology, LLC" << std::endl
+              << "  by Timothy C. Arland (tcarland@gmail.com)" << std::endl << std::endl;
 }
 
 void usage()
@@ -410,8 +410,6 @@ int main ( int argc, char ** argv )
 
     /* init buffers */
     sockaddr_t    csock;
-    sockaddr_in * cin;
-    ipv4addr_t    addr;
     netudp_h      udph;
 
     PathData    * udata   = NULL;
@@ -611,8 +609,6 @@ int main ( int argc, char ** argv )
         sz   = rbuff->writePtrAvailable();
         wptr = rbuff->getWritePtr(&sz);
         rd   = icmps->readFrom(wptr, sz, csock);
-        cin  = (sockaddr_in*) &csock;
-        addr = cin->sin_addr.s_addr;
 
         if ( rd < 0 )
             errorOut("ICMP read failed: " + icmps->getErrorString());
