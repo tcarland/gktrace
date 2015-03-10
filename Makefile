@@ -4,12 +4,16 @@ else
     TOPDIR = .
 endif
 
-USE_PTHREADS = 1
-
 NEED_SOCKET = 1
 NEED_TCANETPP = 1
+
+ifdef USE_PTHREADS
 NEED_PTHREADS = 1
+endif
+
+ifdef USE_LIBRT
 NEED_LIBRT = 1
+endif
 
 ifdef TNMS_DEBUG
 OPT_FLAGS = 	-g
