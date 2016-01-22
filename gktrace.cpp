@@ -5,7 +5,7 @@
  * Author: tcarland@gmail.com
  * Created: March 19, 2010
  */
-#define _GKPF_GKTRACE_CPP_
+#define _GKTRACE_CPP_
 
 
 extern "C" {
@@ -50,7 +50,7 @@ using namespace tcanetpp;
 #define TR_PORT_SRC     33655
 
 
-const char* Version = "v0.28";
+const char* Version = "v0.29";
 bool        Alarm   = false;
 int         Pid     = 0;
 
@@ -202,11 +202,12 @@ ssize_t readIcmpResponse ( CircularBuffer * buff, IcmpResponse & response )
 {
     ssize_t   rd;
 
-    rd   = readIPHeader(buff, &response.iph);
+    rd = readIPHeader(buff, &response.iph);
+
     if ( rd <= 0 )
         return rd;
 
-    rd   = readIcmpHeader(buff, &response.icmph);
+    rd = readIcmpHeader(buff, &response.icmph);
 
     if ( rd <= 0 ) {
         std::cout << "Invalid header" << std::endl;
@@ -379,13 +380,13 @@ int main ( int argc, char ** argv )
     }
 
     if ( mhoploss < 2 ) {
-        std::cout << "Dead hop count must be > 1, using default" << std::endl;
         mhoploss = MAXHOPSLOST;
+        std::cout << "Dead hop count must be > 1, using default of " << mhoploss << std::endl;
     }
 
     if ( dstportm < 1024 ) {
-        std::cout << "Ignoring dest port value; considered invalid (<1024)" << std::endl;
         dstportm = TR_PORT_MASK;
+        std::cout << "Ignoring dest port value; considered invalid (<1024)" << std::endl;
     }
 
     // init rand data block
