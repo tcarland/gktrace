@@ -49,6 +49,7 @@ using namespace tcanetpp;
 #define TR_PORT_MASK    33434
 #define TR_PORT_SRC     33655
 
+namespace gktrace {
 
 const char* Version = "v0.29";
 bool        Alarm   = false;
@@ -169,7 +170,7 @@ void dropPriv()
     ::seteuid(uid);
 
     if ( ::geteuid() != uid )
-        throw Exception("dropPrivileges() failed");
+        throw Exception("gktrace::dropPrivileges() failed");
 
     return;
 }
@@ -263,6 +264,10 @@ void printStatHeader()
               << std::endl;
 }
 
+} // namespace
+
+
+using namespace gktrace;
 
 
 int main ( int argc, char ** argv )
@@ -394,7 +399,7 @@ int main ( int argc, char ** argv )
     if ( size > MAX_BUFFER_SIZE )
         size  = (MAX_BUFFER_SIZE - sizeof(netudp_h) - 4);
     size += Serializer::PadLen(size);
-    initDataBlock(dataf, size);
+    gktrace::initDataBlock(dataf, size);
  
     // ----
 
@@ -426,8 +431,8 @@ int main ( int argc, char ** argv )
     buflen        = MAX_BUFFER_SIZE;
     idsz          = sizeof(netudp_h) + size;
 
-    CircularBuffer * rbuff = new CircularBuffer(buflen);
-    CircularBuffer * wbuff = new CircularBuffer(buflen);
+    CircularBuffer * rbuff = new tcanetpp::CircularBuffer(buflen);
+    CircularBuffer * wbuff = new tcanetpp::CircularBuffer(buflen);
 
     udph.srcport = htons(srcp);
     udph.dstport = 0;
@@ -449,7 +454,7 @@ int main ( int argc, char ** argv )
     PathVector  pathseq(maxhops);
     HopIndex    lostq;
 
-    printStatHeader();
+    gktrace::printStatHeader();
 
     while ( ! Alarm )
     {
@@ -467,7 +472,7 @@ int main ( int argc, char ** argv )
                 if ( debug )
                     std::cout << "Sleep " << interval << " ms" << std::endl;
                 sleep_ms(interval);
-                printStatHeader();
+                gktrace::printStatHeader();
             }
 
             if ( lostq.size() > mhoploss ) {
@@ -482,7 +487,7 @@ int main ( int argc, char ** argv )
                 if ( debug )
                     std::cout << "Timeout limit reached at hop " << phops << std::endl;
 
-                printStatHeader();
+                gktrace::printStatHeader();
                 continue;
             }
 
@@ -532,7 +537,8 @@ int main ( int argc, char ** argv )
                     }
                     else 
                     { 
-                        if ( retry < 3 ) {
+                        if ( retry < 3 ) 
+                        {
                             if ( retry == 0 ) {
                                 std::cout << std::setw(2) << ttl << ": "
                                     << std::setw(15) << IpAddr::ntop(pdata.ipaddr)
@@ -613,10 +619,11 @@ int main ( int argc, char ** argv )
 
         if ( rd < 0 )
             errorOut("ICMP read failed: " + icmps->getErrorString());
+
         rbuff->setWritePtr(rd);
 
         if ( rd > 0 )
-            rd = readIcmpResponse(rbuff, response);
+            rd = gktrace::readIcmpResponse(rbuff, response);
 
         EventManager::GetTimeOfDay(&tvin);
 
@@ -647,7 +654,7 @@ int main ( int argc, char ** argv )
             }
             else 
             {
-                if ( ! readIPHeader(rbuff, &iph) )
+                if ( ! gktrace::readIPHeader(rbuff, &iph) )
                     continue;
 
                 if ( iph.dstaddr != dstaddr )  // not our packet
@@ -720,7 +727,7 @@ int main ( int argc, char ** argv )
                 pdata.proto      = iph.protocol;
                 pdata.cnt++;
 
-                avg = (pdata.rtt_total / pdata.cnt);
+                avg  =  (pdata.rtt_total / pdata.cnt);
             }
 
             std::cout << std::setw(2) << hop << ": " 
@@ -795,9 +802,9 @@ int main ( int argc, char ** argv )
         std::cout << std::setw(3)  << pdata.hop << ": " 
                   << std::setw(15) << std::setiosflags(std::ios_base::right) <<  hopname 
                   << std::setw(8)  << loss << "% (" << pdata.cnt << "/" << pdata.seq << ")"
-                  << std::setw(8) << std::setprecision(5) << rttavg
-                  << std::setw(8) << std::setprecision(5) << pdata.rtt_min
-                  << std::setw(8) << std::setprecision(5) << pdata.rtt_max << " |"
+                  << std::setw(8)  << std::setprecision(5) << rttavg
+                  << std::setw(8)  << std::setprecision(5) << pdata.rtt_min
+                  << std::setw(8)  << std::setprecision(5) << pdata.rtt_max << " |"
                   << std::setw(10) << std::setprecision(5) << rtdavg
                   << std::setw(10) << std::setprecision(5) << pdata.rtd_min
                   << std::setw(10) << std::setprecision(5) << pdata.rtd_max;

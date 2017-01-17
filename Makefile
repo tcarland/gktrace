@@ -1,8 +1,4 @@
-ifdef TCAMAKE_PROJECT
-    TOPDIR = ../..
-else
-    TOPDIR = .
-endif
+TOPDIR = ..
 
 NEED_SOCKET = 1
 NEED_TCANETPP = 1
@@ -15,7 +11,7 @@ ifdef USE_LIBRT
 NEED_LIBRT = 1
 endif
 
-ifdef TNMS_DEBUG
+ifdef TCAMAKE_DEBUG
 OPT_FLAGS = 	-g
 else
 OPT_FLAGS =	-O2
@@ -52,25 +48,25 @@ distclean: clean
 	@echo
 
 dist:
-ifdef TNMS_DISTDIR
-ifdef TNMS_DEBUG
-	$(MKDIR) $(TNMS_DISTDIR)/$(TCA_PORT_IDENTIFIER)/debug
-	$(CP) $(GKTRACE) $(TNMS_DISTDIR)/$(TCA_PORT_IDENTIFIER)/debug/
+ifdef TCAMAKE_DISTDIR
+ifdef TCAMAKE_DEBUG
+	$(MKDIR) $(TCAMAKE_DISTDIR)/$(TCA_PORT_IDENTIFIER)/debug
+	$(CP) $(GKTRACE) $(TCAMAKE_DISTDIR)/$(TCA_PORT_IDENTIFIER)/debug/
 else
-	$(MKDIR) $(TNMS_DISTDIR)/$(TCA_PORT_IDENTIFIER)/release
-	$(CP) $(GKTRACE) $(TNMS_DISTDIR)/$(TCA_PORT_IDENTIFIER)/release/
+	$(MKDIR) $(TCAMAKE_DISTDIR)/$(TCA_PORT_IDENTIFIER)/release
+	$(CP) $(GKTRACE) $(TCAMAKE_DISTDIR)/$(TCA_PORT_IDENTIFIER)/release/
 endif
 endif
 
 install:
-ifndef TNMS_DEBUG
+ifndef TCAMAKE_DEBUG
 	( strip $(GKTRACE) )
 endif
-ifdef TNMS_PREFIX
-	$(MKDIR) $(TNMS_PREFIX)/bin
-	$(CP) $(GKTRACE) $(TNMS_PREFIX)/bin/
-	( sudo chown root $(TNMS_PREFIX)/bin/$(GKTRACE) )
-	( sudo chmod u+s $(TNMS_PREFIX)/bin/$(GKTRACE) )
+ifdef TCAMAKE_PREFIX
+	$(MKDIR) $(TCAMAKE_PREFIX)/bin
+	$(CP) $(GKTRACE) $(TCAMAKE_PREFIX)/bin/
+	( sudo chown root $(TCAMAKE_PREFIX)/bin/$(GKTRACE) )
+	( sudo chmod u+s $(TCAMAKE_PREFIX)/bin/$(GKTRACE) )
 	@echo
 else
 	( sudo chown root $(GKTRACE) )
