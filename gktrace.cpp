@@ -21,6 +21,7 @@ extern "C" {
 #include <cstdlib>
 #include <iostream>
 #include <iomanip>
+#include <stdexcept>
 #include <vector>
 #include <set>
 #include <algorithm>
@@ -98,14 +99,16 @@ struct IcmpResponse {
 
 
 
-void version()
+void 
+version()
 {
     std::cout << "gktrace " << Version
               << ", Copyright (C) 2010, Charlton Technology, LLC" << std::endl
               << "  by Timothy C. Arland (tcarland@gmail.com)" << std::endl << std::endl;
 }
 
-void usage()
+void 
+usage()
 {
     version();
     std::cout << "Usage: gktrace [-cdhiInmpstV] <host|ip>" << std::endl
@@ -129,13 +132,15 @@ void usage()
     exit(0);
 }
 
-void errorOut ( const std::string & err )
+void 
+errorOut ( const std::string & err )
 {
     std::cerr << "Error: " << err << std::endl;
     exit(-1);
 }
 
-void sigHandler ( int signal )
+void 
+sigHandler ( int signal )
 {
     if ( signal == SIGINT || signal == SIGTERM ) {
         Alarm = true;
@@ -144,7 +149,8 @@ void sigHandler ( int signal )
     return;
 }
 
-void sleep_ms ( int ms )
+void 
+sleep_ms ( int ms )
 {
 #   ifdef WIN32
     ::Sleep(ms);
@@ -156,28 +162,33 @@ void sleep_ms ( int ms )
 
 
 #ifndef WIN32
-void dropPriv()
+int 
+dropPriv()
 {
     uid_t  uid;
     gid_t  gid;
+    int    r  = 0;
 
     if ( geteuid() != 0 )
-        return;
+        return 4;
 
     uid  = ::getuid();
     gid  = ::getgid();
-    ::setegid(gid);
-    ::seteuid(uid);
+    if ( (r = ::setegid(gid)) < 0 )
+        return r;
+    if ( (r = ::seteuid(uid)) < 0 )
+        return r;
 
     if ( ::geteuid() != uid )
-        throw Exception("gktrace::dropPrivileges() failed");
+        throw std::runtime_error("gktrace::dropPrivileges() failed");
 
-    return;
+    return r;
 }
 #endif
 
 
-ssize_t readIPHeader ( CircularBuffer * buff, netip_h * iph )
+ssize_t 
+readIPHeader ( CircularBuffer * buff, netip_h * iph )
 {
     size_t len  = sizeof(netip_h);
 
@@ -188,7 +199,8 @@ ssize_t readIPHeader ( CircularBuffer * buff, netip_h * iph )
 }
 
 
-ssize_t readIcmpHeader ( CircularBuffer * buff, neticmp_h * icmph )
+ssize_t 
+readIcmpHeader ( CircularBuffer * buff, neticmp_h * icmph )
 {
     size_t len = sizeof(neticmp_h);
 
@@ -199,7 +211,8 @@ ssize_t readIcmpHeader ( CircularBuffer * buff, neticmp_h * icmph )
 }
 
 
-ssize_t readIcmpResponse ( CircularBuffer * buff, IcmpResponse & response )
+ssize_t 
+readIcmpResponse ( CircularBuffer * buff, IcmpResponse & response )
 {
     ssize_t   rd;
 
@@ -219,7 +232,8 @@ ssize_t readIcmpResponse ( CircularBuffer * buff, IcmpResponse & response )
 }
 
 
-ssize_t readUdpHeader ( CircularBuffer * buff, netudp_h * udph )
+ssize_t 
+readUdpHeader ( CircularBuffer * buff, netudp_h * udph )
 {
     size_t len = sizeof(netudp_h);
 
@@ -230,7 +244,8 @@ ssize_t readUdpHeader ( CircularBuffer * buff, netudp_h * udph )
 }
 
 
-void initDataBlock ( std::string & data, size_t length )
+void 
+initDataBlock ( std::string & data, size_t length )
 {
     uint32_t  val;
     double    range = 255.0;
@@ -249,7 +264,8 @@ void initDataBlock ( std::string & data, size_t length )
 }
 
 
-void printStatHeader()
+void 
+printStatHeader()
 {
     std::cout << std::endl
               << std::setw(3) << "hop"
@@ -270,7 +286,8 @@ void printStatHeader()
 using namespace gktrace;
 
 
-int main ( int argc, char ** argv )
+int 
+main ( int argc, char ** argv )
 {
     char      optChar;
     char    * target;
@@ -288,7 +305,6 @@ int main ( int argc, char ** argv )
 
     timeval   tvin, tvo, tv;
 
-
     static struct option l_opts[] = { {"debug", no_argument, 0, 'd'},
                                       {"count", required_argument, 0, 'c'},
                                       {"nodns", no_argument, 0, 'n'},
@@ -302,7 +318,6 @@ int main ( int argc, char ** argv )
                                       {"version", no_argument, 0, 'V'},
                                       {0,0,0,0}
                                     };
-
     if ( argc < 2 )
         usage();
 
@@ -444,8 +459,9 @@ int main ( int argc, char ** argv )
     else
         std::cout << "Sending UDP datagrams (" << size << " bytes) to ";
 
-    std::cout << dstname << ". count = " << count << " interval = " << interval
-              << " milliseconds" << std::endl;
+    std::cout << dstname  << ". count = " 
+              << count    << " interval = " 
+              << interval << " milliseconds" << std::endl;
 
     uint16_t    ttl     = 0;
     uint16_t    maxhops = 30;
@@ -541,9 +557,9 @@ int main ( int argc, char ** argv )
                         {
                             if ( retry == 0 ) {
                                 std::cout << std::setw(2) << ttl << ": "
-                                    << std::setw(15) << IpAddr::ntop(pdata.ipaddr)
-                                    << "  <" << pdata.seq << ">"
-                                    << std::setw(10) << "*" << std::flush;
+                                          << std::setw(15) << IpAddr::ntop(pdata.ipaddr)
+                                          << "  <" << pdata.seq << ">"
+                                          << std::setw(10) << "*" << std::flush;
                             } else { 
                                 std::cout << std::setw(10) << "*" << std::flush;
                             }
