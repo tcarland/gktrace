@@ -14,7 +14,9 @@ cd ..
 git clone https://github.com/tcarland/tcamake.git
 git clone https://github.com/tcarland/tcanetpp.git
 export TCAMAKE_PROJECT=1
-cd tcanetpp; make arlib
+cd tcanetpp
+source resources/tcanetpp_release_mt.profile
+make arlib
 cd ../tcajson; make
 ```
 
