@@ -28,12 +28,12 @@ extern "C" {
 
 #include "tcanetpp_ip.h"
 #include "tcanetpp_random.h"
-#include "Socket.h"
-#include "EventManager.h"
-#include "IpAddr.h"
-#include "AddrInfo.h"
-#include "StringUtils.h"
-#include "Serializer.h"
+#include "event/EventManager.h"
+#include "net/Socket.h"
+#include "net/IpAddr.h"
+#include "net/AddrInfo.h"
+#include "util/StringUtils.h"
+#include "util/Serializer.h"
 #include "CircularBuffer.h"
 #include "LogFacility.h"
 using namespace tcanetpp;
@@ -325,7 +325,7 @@ main ( int argc, char ** argv )
     {
         switch ( optChar ) {
             case 'c':
-                count = StringUtils::fromString<int>(optarg);
+                count = StringUtils::FromString<int>(optarg);
                 break;
             case 'd':
                 debug = true;
@@ -334,7 +334,7 @@ main ( int argc, char ** argv )
                 icmp = true;
                 break;
             case 'i':
-                interval = StringUtils::fromString<int>(optarg);
+                interval = StringUtils::FromString<int>(optarg);
                 break;
             case 'h':
                 usage();
@@ -343,16 +343,16 @@ main ( int argc, char ** argv )
                 resolve = false;
                 break;
             case 'm':
-                mhoploss = StringUtils::fromString<int>(optarg);
+                mhoploss = StringUtils::FromString<int>(optarg);
                 break;
             case 'p':
-                dstportm = StringUtils::fromString<uint16_t>(optarg);
+                dstportm = StringUtils::FromString<uint16_t>(optarg);
                 break;
             case 's':
-                size = StringUtils::fromString<size_t>(optarg);
+                size = StringUtils::FromString<size_t>(optarg);
                 break;
             case 't':
-                mhoptime = StringUtils::fromString<int>(optarg);
+                mhoptime = StringUtils::FromString<int>(optarg);
                 break;
             case 'V':
                 version();

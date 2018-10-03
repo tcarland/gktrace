@@ -24,7 +24,7 @@ GKTRACE=	gktrace
 
 BIN=		$(GKTRACE)
 
-OBJS=		gktrace.o
+OBJS=		src/gktrace.o
 
 ALL_OBJS=	$(OBJS) $(COBJS)
 ALL_BINS=	$(BIN)
