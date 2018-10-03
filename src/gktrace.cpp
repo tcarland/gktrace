@@ -50,9 +50,11 @@ using namespace tcanetpp;
 #define TR_PORT_MASK    33434
 #define TR_PORT_SRC     33655
 
+
 namespace gktrace {
 
-const char* Version = "v0.29";
+
+const char* Version = "v0.292";
 bool        Alarm   = false;
 int         Pid     = 0;
 
@@ -104,7 +106,8 @@ version()
 {
     std::cout << "gktrace " << Version
               << ", Copyright (C) 2010, Charlton Technology, LLC" << std::endl
-              << "  by Timothy C. Arland (tcarland@gmail.com)" << std::endl << std::endl;
+              << "  by Timothy C. Arland (tcarland@gmail.com)" << std::endl 
+              << std::endl;
 }
 
 void 
@@ -119,15 +122,12 @@ usage()
               << "                            (default = 1000 ms or 1 second)" << std::endl
               << "    -I | --icmp          : Use icmp only (for faster path discovery)" << std::endl
               << "    -n | --nodns         : Do not resolve the results" << std::endl
-              << "    -m | --maxhops <n>   : Number of consecutive dead hops before stopping discovery" 
-              << std::endl
+              << "    -m | --maxhops <n>   : Number of consecutive dead hops before stopping discovery" << std::endl
               << "                            ( default is 3 hops )" << std::endl
-              << "    -p | --port <num>    : Port number mask (dst) for probes. (Default is " 
-              << TR_PORT_MASK << ")" << std::endl
+              << "    -p | --port <num>    : Port number mask (dst) for probes. (Default is " << TR_PORT_MASK << ")" << std::endl
               << "    -s | --size <bytes>  : Number of bytes to use as payload size" << std::endl
               << "    -t | --timeout <s>   : Seconds before hop is considered non-responsive" << std::endl
-              << "                            (minimum is 1 second. Increase for long or bad paths)" 
-              << std::endl
+              << "                            (minimum is 1 second. Increase for long or bad paths)" << std::endl
               << "    -V | --version       : Print version info and exit" << std::endl << std::endl;
     exit(0);
 }
@@ -224,7 +224,7 @@ readIcmpResponse ( CircularBuffer * buff, IcmpResponse & response )
     rd = readIcmpHeader(buff, &response.icmph);
 
     if ( rd <= 0 ) {
-        std::cout << "Invalid header" << std::endl;
+        std::cout << "Invalid ICMP header" << std::endl;
         return -1;
     }
 
