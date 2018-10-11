@@ -28,14 +28,14 @@ extern "C" {
 
 #include "tcanetpp_ip.h"
 #include "tcanetpp_random.h"
+#include "CircularBuffer.h"
 #include "event/EventManager.h"
 #include "net/Socket.h"
 #include "net/IpAddr.h"
 #include "net/AddrInfo.h"
 #include "util/StringUtils.h"
 #include "util/Serializer.h"
-#include "CircularBuffer.h"
-#include "LogFacility.h"
+#include "util/LogFacility.h"
 using namespace tcanetpp;
 
 
