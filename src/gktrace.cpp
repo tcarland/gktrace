@@ -2,11 +2,10 @@
  * GkTrace - A continuous traceroute providing per-hop loss, latency and jitter
  * statistics.
  *
- * Author: tcarland@gmail.com
+ * Author: Timothy C. Arland <tcarland@gmail.com> - Charlton Technology, LLC
  * Created: March 19, 2010
  */
 #define _GKTRACE_CPP_
-
 
 extern "C" {
 #include <signal.h>
@@ -54,7 +53,7 @@ using namespace tcanetpp;
 namespace gktrace {
 
 
-const char* Version = "v0.292";
+const char* Version = "v0.5.0";
 bool        Alarm   = false;
 int         Pid     = 0;
 
@@ -100,13 +99,11 @@ struct IcmpResponse {
 };
 
 
-
 void 
 version()
 {
     std::cout << "gktrace " << Version
-              << ", Copyright (C) 2010, Charlton Technology, LLC" << std::endl
-              << "  by Timothy C. Arland (tcarland@gmail.com)" << std::endl 
+              << ", Copyright (C) 2010-2020, Timothy C. Arland (tcarland@gmail.com)" << std::endl 
               << std::endl;
 }
 
@@ -268,13 +265,13 @@ void
 printStatHeader()
 {
     std::cout << std::endl
-              << std::setw(3) << "hop"
+              << std::setw(3)  << "hop"
               << std::setw(15) << " address" 
-              << std::setw(4) << "   seq" 
+              << std::setw(4)  << "   seq" 
               << std::setw(10) << " rtt(ms)" 
               << std::setw(10) << " avg(ms)"
               << std::setw(10) << " ipdv"
-              << std::setw(6) << "   type"
+              << std::setw(6)  << "   type"
               << std::endl
               << "----------------------------------------------------------------"
               << std::endl;
@@ -416,7 +413,7 @@ main ( int argc, char ** argv )
     size += Serializer::PadLen(size);
     gktrace::initDataBlock(dataf, size);
  
-    // ----
+    // ---------------------------------
 
     Socket * udps  = new Socket(dstaddr, SOCKET_UDP, SOCKTYPE_RAW, SOCKET_UDP);
     Socket * icmps = new Socket(dstaddr, SOCKET_ICMP, SOCKTYPE_RAW, SOCKET_ICMP);
@@ -623,7 +620,6 @@ main ( int argc, char ** argv )
             send       = false;
             timeout    = false;
         }
-
 
         IcmpResponse  response;
 
