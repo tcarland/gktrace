@@ -2,12 +2,10 @@
  * GkTrace - A continuous traceroute providing per-hop loss, latency and jitter
  * statistics.
  *
- * Author: tcarland@gmail.com 
- * Charlton Technology, LLC
+ * Author: Timothy C. Arland <tcarland@gmail.com> - Charlton Technology, LLC
  * Created: March 19, 2010
  */
 #define _GKTRACE_CPP_
-
 
 extern "C" {
 #include <signal.h>
@@ -415,7 +413,7 @@ main ( int argc, char ** argv )
     size += Serializer::PadLen(size);
     gktrace::initDataBlock(dataf, size);
  
-    // ----
+    // ---------------------------------
 
     Socket * udps  = new Socket(dstaddr, SOCKET_UDP, SOCKTYPE_RAW, SOCKET_UDP);
     Socket * icmps = new Socket(dstaddr, SOCKET_ICMP, SOCKTYPE_RAW, SOCKET_ICMP);
