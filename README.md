@@ -1,14 +1,12 @@
 gktrace
 ========
 
-A Traceroute implementation providing continuous per-hop, loss, latency, and jitter statistics 
-per RFC3393
+A Traceroute implementation providing continuous per-hop, loss, 
+latency, and jitter statistics per RFC3393.
 
-It makes use of the network library tcanetpp and started out as an example of 
-implementing traceroute using the library.
+It makes use of the network library *tcanetpp*.
 
 Building:
-
 ```
 cd ..
 git clone https://github.com/tcarland/tcamake.git
@@ -19,5 +17,3 @@ source resources/tcanetpp_release_mt.profile
 make arlib
 cd ../tcajson; make
 ```
-
-
