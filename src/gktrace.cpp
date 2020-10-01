@@ -53,7 +53,7 @@ using namespace tcanetpp;
 namespace gktrace {
 
 
-const char* Version = "v0.5.0";
+const char* Version = "v0.5.1";
 bool        Alarm   = false;
 int         Pid     = 0;
 
@@ -580,7 +580,7 @@ main ( int argc, char ** argv )
                 req.seq    = 0;
                 req.chksum = Socket::IpChkSum(((uint16_t*)&req), sizeof(neticmp_h));
 
-                if ( icmps->setSocketOption(IPPROTO_IP, IP_TTL, ttl) < 0 )
+                if ( ! icmps->setSocketOption(IPPROTO_IP, IP_TTL, ttl) )
                     errorOut("ICMP setsockopt failed: " + udps->getErrorString());
 
                 wt = icmps->write(&req, sizeof(neticmp_h));
@@ -590,7 +590,7 @@ main ( int argc, char ** argv )
                 udph.dstport = htons(port+ttl);
                 udph.chksum  = 0;
 
-                if ( udps->setSocketOption(IPPROTO_IP, IP_TTL, ttl) < 0 )
+                if ( ! udps->setSocketOption(IPPROTO_IP, IP_TTL, ttl) )
                     errorOut("UDP setsockopt failed: " + udps->getErrorString());
 
                 wbuff->reset();
