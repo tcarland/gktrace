@@ -1,4 +1,6 @@
+export PROFILE="gktrace-release"
 
-USE_PTHREADS=1
-USE_LIBRT=1
+export TCAMAKE_DEBUG=
+export USE_PTHREADS=1
+export USE_LIBRT=1
 

@@ -29,10 +29,11 @@ OBJS=		src/gktrace.o
 ALL_OBJS=	$(OBJS) $(COBJS)
 ALL_BINS=	$(BIN)
 
+
+include $(TOPDIR)/tcamake/tcamake_include
+
+
 all: gktrace
-
-include $(TOPDIR)/tcamake/project_defs
-
 
 gktrace: $(OBJS)
 	$(make-cxxbin-rule)
