@@ -53,7 +53,7 @@ using namespace tcanetpp;
 namespace gktrace {
 
 
-const char* Version = "v0.5.1";
+const char* Version = "v0.5.2";
 bool        Alarm   = false;
 int         Pid     = 0;
 
