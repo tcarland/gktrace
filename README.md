@@ -9,7 +9,7 @@ building. System dependencies are librt, pthreads, libc and libstdc++.
 
 This project was conceived as an example of the network library this 
 uses and borrows from a separate path analysis and probing tool 
-developed separately using the same library.
+developed using the same library.
 
 Building gktrace:
 ```
