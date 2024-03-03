@@ -1,4 +1,4 @@
-TOPDIR = ..
+# gktrace Makefile
 
 NEED_SOCKET = 1
 NEED_TCANETPP = 1
@@ -30,7 +30,11 @@ ALL_OBJS=	$(OBJS) $(COBJS)
 ALL_BINS=	$(BIN)
 
 
-include $(TOPDIR)/tcamake/tcamake_include
+ifeq ($(TCAMAKE_HOME),)
+	export TCAMAKE_HOME := $(shell realpath ../tcamake)
+endif
+
+include $(TCAMAKE_HOME)/tcamake_include
 
 
 all: gktrace
