@@ -16,7 +16,6 @@ Building gktrace:
 $ cd ..
 $ git clone https://github.com/tcarland/tcamake.git
 $ git clone https://github.com/tcarland/tcanetpp.git
-$ export TCAMAKE_PROJECT=1
 $ export TCAMAKE_PREFIX=/usr/local
 $ cd tcanetpp
 $ source resources/tcanetpp_release_mt.profile
