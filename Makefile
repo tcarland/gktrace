@@ -1,5 +1,4 @@
 # gktrace Makefile
-
 NEED_SOCKET = 1
 NEED_TCANETPP = 1
 
@@ -12,22 +11,22 @@ NEED_LIBRT = 1
 endif
 
 ifdef TCAMAKE_DEBUG
-OPT_FLAGS = 	-g
+OPT_FLAGS = -g
 else
 OPT_FLAGS =	-O2
 endif
 
-INCLUDES=       -I.
+INCLUDES =  -I.
 LIBS=
 
-GKTRACE=	gktrace
+GKTRACE =	gktrace
 
-BIN=		$(GKTRACE)
+BIN =		$(GKTRACE)
 
-OBJS=		src/gktrace.o
+OBJS =		src/gktrace.o
 
-ALL_OBJS=	$(OBJS) $(COBJS)
-ALL_BINS=	$(BIN)
+ALL_OBJS =	$(OBJS) $(COBJS)
+ALL_BINS =	$(BIN)
 
 
 ifeq ($(TCAMAKE_HOME),)
@@ -55,11 +54,11 @@ distclean: clean
 dist:
 ifdef TCAMAKE_DISTDIR
 ifdef TCAMAKE_DEBUG
-	$(MKDIR) $(TCAMAKE_DISTDIR)/$(TCA_PORT_IDENTIFIER)/debug
-	$(CP) $(GKTRACE) $(TCAMAKE_DISTDIR)/$(TCA_PORT_IDENTIFIER)/debug/
+	$(MKDIR) $(TCAMAKE_DISTDIR)/$(TCAMAKE_PORT_IDENTIFIER)/debug
+	$(CP) $(BIN) $(TCAMAKE_DISTDIR)/$(TCAMAKE_PORT_IDENTIFIER)/debug/
 else
-	$(MKDIR) $(TCAMAKE_DISTDIR)/$(TCA_PORT_IDENTIFIER)/release
-	$(CP) $(GKTRACE) $(TCAMAKE_DISTDIR)/$(TCA_PORT_IDENTIFIER)/release/
+	$(MKDIR) $(TCAMAKE_DISTDIR)/$(TCAMAKE_PORT_IDENTIFIER)/release
+	$(CP) $(BIN) $(TCAMAKE_DISTDIR)/$(TCAMAKE_PORT_IDENTIFIER)/release/
 endif
 endif
 
@@ -69,12 +68,12 @@ ifndef TCAMAKE_DEBUG
 endif
 ifdef TCAMAKE_PREFIX
 	$(MKDIR) $(TCAMAKE_PREFIX)/bin
-	$(CP) $(GKTRACE) $(TCAMAKE_PREFIX)/bin/
-	( sudo chown root $(TCAMAKE_PREFIX)/bin/$(GKTRACE) )
-	( sudo chmod u+s $(TCAMAKE_PREFIX)/bin/$(GKTRACE) )
+	$(CP) $(BIN) $(TCAMAKE_PREFIX)/bin/
+	( sudo chown root $(TCAMAKE_PREFIX)/bin/$(BIN) )
+	( sudo chmod u+s $(TCAMAKE_PREFIX)/bin/$(BIN) )
 	@echo
 else
-	( sudo chown root $(GKTRACE) )
-	( sudo chmod u+s $(GKTRACE) )
+	( sudo chown root $(BIN) )
+	( sudo chmod u+s $(BIN) )
 endif
 

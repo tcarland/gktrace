@@ -25,85 +25,29 @@ extern "C" {
 #include <set>
 #include <algorithm>
 
-#include "tcanetpp_ip.h"
-#include "tcanetpp_random.h"
+#include "gktrace.h"
+
 #include "CircularBuffer.h"
-#include "event/EventManager.h"
-#include "net/Socket.h"
-#include "net/IpAddr.h"
-#include "net/AddrInfo.h"
 #include "util/StringUtils.h"
 #include "util/Serializer.h"
 #include "util/LogFacility.h"
 using namespace tcanetpp;
 
 
-#define SEQINTERVAL_MS  1000
-#define SEQTIMEOUT      1
-#define MAXSEQCOUNT     100
-#define MAXHOPSLOST     3
-#define MAXHOPS         30
-#define DEFAULT_SIZE    48
-#define MAX_BUFFER_SIZE 2048
-#define PORT_ID_MASK    5995
-#define TR_PORT_MASK    33434
-#define TR_PORT_SRC     33655
-
-
 namespace gktrace {
 
 
-const char* Version = "v0.6.1";
+const char* Version = "v0.6.2";
 bool        Alarm   = false;
 int         Pid     = 0;
 
-
-struct data_ts {
-    uint32_t  secs;
-    uint32_t  usecs;
-};
-
-
-struct PathData {
-    uint16_t  hop;
-    uint16_t  proto;
-    uint32_t  ipaddr;
-    uint32_t  seq;
-    uint32_t  cnt;
-    float     rtt;
-    float     rtt_min;
-    float     rtt_max;
-    float     rtt_total;
-    float     rtd;
-    float     rtd_min;
-    float     rtd_max;
-    float     rtd_total;
-    uint32_t  secs;
-    uint32_t  usecs;
-
-    PathData() 
-        : hop(0), proto(SOCKET_UDP), ipaddr(0), seq(0), cnt(0), 
-          rtt(0.0), rtt_min(0.0), rtt_max(0.0), rtt_total(0.0),
-          rtd(0.0), rtd_min(0.0), rtd_max(0.0), rtd_total(0.0),
-          secs(0), usecs(0)
-    {}
-};
-
-typedef std::vector<PathData> PathVector;
-typedef std::set<int>         HopIndex;
-
-
-struct IcmpResponse {
-    netip_h    iph;
-    neticmp_h  icmph;
-};
 
 
 void 
 version()
 {
     std::cout << "gktrace " << Version
-              << ", Copyright (C) 2010-2020, Timothy C. Arland (tcarland@gmail.com)" << std::endl 
+              << ", Copyright (C) 2010-2024, Timothy C. Arland (tcarland@gmail.com)" << std::endl 
               << std::endl;
 }
 
@@ -112,20 +56,20 @@ usage()
 {
     version();
     std::cout << "Usage: gktrace [-cdhiInmpstV] <host|ip>" << std::endl
-              << "    -c | --count  <num>  : Number of test iterations" << std::endl
-              << "    -d | --debug         : Enable debug output" << std::endl
-              << "    -h | --help          : Print help info and exit" << std::endl
-              << "    -i | --interval <ms> : milliseconds between test iterations" << std::endl
-              << "                            (default = 1000 ms or 1 second)" << std::endl
-              << "    -I | --icmp          : Use icmp only (for faster path discovery)" << std::endl
-              << "    -n | --nodns         : Do not resolve the results" << std::endl
-              << "    -m | --maxhops <n>   : Number of consecutive dead hops before stopping discovery" << std::endl
-              << "                            ( default is 3 hops )" << std::endl
-              << "    -p | --port <num>    : Port number mask (dst) for probes. (Default is " << TR_PORT_MASK << ")" << std::endl
-              << "    -s | --size <bytes>  : Number of bytes to use as payload size" << std::endl
-              << "    -t | --timeout <s>   : Seconds before hop is considered non-responsive" << std::endl
-              << "                            (minimum is 1 second. Increase for long or bad paths)" << std::endl
-              << "    -V | --version       : Print version info and exit" << std::endl << std::endl;
+              << "  -c | --count  <num>  : Number of test iterations" << std::endl
+              << "  -d | --debug         : Enable debug output" << std::endl
+              << "  -h | --help          : Print help info and exit" << std::endl
+              << "  -i | --interval <ms> : milliseconds between test iterations" << std::endl
+              << "                         (default = 1000 ms or 1 second)" << std::endl
+              << "  -I | --icmp          : Use icmp only (for faster path discovery)" << std::endl
+              << "  -n | --nodns         : Do not resolve the results" << std::endl
+              << "  -m | --maxhops <n>   : Number of consecutive dead hops before stopping discovery" << std::endl
+              << "                         ( default is 3 hops )" << std::endl
+              << "  -p | --port <num>    : Port number mask (dst) for probes. (Default is " << TR_PORT_MASK << ")" << std::endl
+              << "  -s | --size <bytes>  : Number of bytes to use as payload size" << std::endl
+              << "  -t | --timeout <s>   : Seconds before hop is considered non-responsive" << std::endl
+              << "                         (minimum is 1 second. Increase for long or bad paths)" << std::endl
+              << "  -V | --version       : Print version info and exit" << std::endl << std::endl;
     exit(0);
 }
 
@@ -280,8 +224,9 @@ printStatHeader()
 } // namespace
 
 
-using namespace gktrace;
 
+
+using namespace gktrace;
 
 int 
 main ( int argc, char ** argv )
@@ -839,6 +784,4 @@ main ( int argc, char ** argv )
 
     return 0;
 }
-
-
 

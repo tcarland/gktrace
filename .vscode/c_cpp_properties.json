@@ -10,7 +10,6 @@
                 "USE_PTHREADS=1",
                 "USE_LIBRT=1"
             ],
-            "compilerPath": "/usr/bin/gcc",
             "cStandard": "c11",
             "cppStandard": "gnu++14",
             "intelliSenseMode": "gcc-x64"
