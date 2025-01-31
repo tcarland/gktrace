@@ -37,7 +37,7 @@ using namespace tcanetpp;
 namespace gktrace {
 
 
-const char* Version = "v0.6.3";
+const char* Version = "v0.7.1";
 bool        Alarm   = false;
 int         Pid     = 0;
 
@@ -47,7 +47,7 @@ void
 version()
 {
     std::cout << "gktrace " << Version
-              << ", Copyright (C) 2010-2024, Timothy C. Arland (tcarland@gmail.com)" << std::endl 
+              << ", Copyright (C) 2010-2025, Timothy C. Arland (tcarland@gmail.com)" << std::endl 
               << std::endl;
 }
 

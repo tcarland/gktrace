@@ -18,13 +18,12 @@ endif
 
 INCLUDES =  -I.
 LIBS=
+CXXFLAGS=   -std=c++23
 
 GKTRACE =	gktrace
 
 BIN =		$(GKTRACE)
-
 OBJS =		src/gktrace.o
-
 ALL_OBJS =	$(OBJS) $(COBJS)
 ALL_BINS =	$(BIN)
 

@@ -10,8 +10,8 @@
                 "USE_PTHREADS=1",
                 "USE_LIBRT=1"
             ],
-            "cStandard": "c11",
-            "cppStandard": "gnu++14",
+            "cStandard": "c23",
+            "cppStandard": "c++23",
             "intelliSenseMode": "gcc-x64"
         }
     ],

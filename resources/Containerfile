@@ -1,4 +1,4 @@
-FROM ghcr.io/tcarland/tcalibcore:v24.07.23
+FROM ghcr.io/tcarland/tcalibcore:v25.02.01
 
 USER root
 
@@ -14,8 +14,8 @@ WORKDIR /opt
 RUN cd gktrace && \
   source .resources/release.profile && \
   make && \
-  make install
+  make install && \
+  make clean
 
-USER 1000
-
+USER tdh
 ENTRYPOINT ["/usr/bin/tini", "--"]
