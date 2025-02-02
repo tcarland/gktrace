@@ -6,16 +6,16 @@ ENV TCAMAKE_HOME /opt/tcamake
 ENV TCAMAKE_PREFIX /usr
 ENV TCAMAKE_PROJECT /opt
 
-RUN mkdir -p /opt/gktrace
 COPY . /opt/gktrace
 
 WORKDIR /opt
 
-RUN cd gktrace && \
-  source .resources/release.profile && \
-  make && \
-  make install && \
-  make clean
+RUN chown -R tdh:tdh /opt/gktrace && \
+    cd /opt/gktrace && \
+    source resources/release.profile && \
+    make && \
+    make install && \
+    make clean
 
 USER tdh
 ENTRYPOINT ["/usr/bin/tini", "--"]
