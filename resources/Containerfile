@@ -1,4 +1,4 @@
-FROM ghcr.io/tcarland/tcalibcore:v25.02.01
+FROM ghcr.io/tcarland/tcalibcore:v25.04.01
 
 USER root
 

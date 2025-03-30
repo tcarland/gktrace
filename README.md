@@ -3,20 +3,20 @@ gktrace
 
 Timothy C. Arland <tcarland at gmail dot com>
 
-# Overview 
+# Overview
 
-A Traceroute implementation providing continuous per-hop, loss, 
+A Traceroute implementation providing continuous per-hop, loss,
 latency, and jitter statistics per RFC3393.
 
-It makes use of the network library *tcanetpp* and *tcamake* for 
+It makes use of the network library *tcanetpp* and *tcamake* for
 building and the following system dependencies:
-- librt 
+- librt
 - pthreads
 - libc
 - libstdc++.
 
-This project was conceived as an example of the network library this 
-uses and borrows from a separate path analysis and probing tool 
+This project was conceived as an example of the network library this
+uses and borrows from a separate path analysis and probing tool
 developed using the same library.
 
 
@@ -33,7 +33,7 @@ git clone https://github.com/tcarland/gktrace.git
 
 ## Dependencies
 
-Install the dependencies, *tcamake* is the build tool, and *tcanetpp* is 
+Install the dependencies, *tcamake* is the build tool, and *tcanetpp* is
 network library.
 ```bash
 git clone https://github.com/tcarland/tcamake.git
@@ -42,7 +42,7 @@ export TCAMAKE_PROJECT="{$project_root}"
 export TCAMAKE_PREFIX=/usr/local
 cd tcanetpp
 source .resources/release_mt.profile
-make 
+make
 ```
 
 ## Build gktrace
