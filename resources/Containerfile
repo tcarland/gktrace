@@ -10,7 +10,7 @@ COPY . /opt/gktrace
 
 WORKDIR /opt
 
-RUN apt-get -y --no-install-recommends sudo \
+RUN apt-get -y --no-install-recommends install sudo && \
     chown -R tdh:tdh /opt/gktrace && \
     cd /opt/gktrace && \
     source resources/gktrace-release.env && \
@@ -19,5 +19,6 @@ RUN apt-get -y --no-install-recommends sudo \
     make clean
 
 USER tdh
+
 ENTRYPOINT ["/usr/bin/tini", "--"]
 
