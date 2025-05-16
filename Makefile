@@ -18,13 +18,12 @@ endif
 
 INCLUDES =  -I.
 LIBS=
+CXXFLAGS=   -std=c++23
 
 GKTRACE =	gktrace
 
 BIN =		$(GKTRACE)
-
 OBJS =		src/gktrace.o
-
 ALL_OBJS =	$(OBJS) $(COBJS)
 ALL_BINS =	$(BIN)
 
@@ -69,11 +68,11 @@ endif
 ifdef TCAMAKE_PREFIX
 	$(MKDIR) $(TCAMAKE_PREFIX)/bin
 	$(CP) $(BIN) $(TCAMAKE_PREFIX)/bin/
-	( chown root $(TCAMAKE_PREFIX)/bin/$(BIN) )
-	( chmod u+s $(TCAMAKE_PREFIX)/bin/$(BIN) )
+	( sudo chown root $(TCAMAKE_PREFIX)/bin/$(BIN) )
+	( sudo chmod u+s $(TCAMAKE_PREFIX)/bin/$(BIN) )
 	@echo
 else
-	( chown root $(BIN) )
-	( chmod u+s $(BIN) )
+	( sudo chown root $(BIN) )
+	( sudo chmod u+s $(BIN) )
 endif
 

@@ -1,10 +1,28 @@
-/*
- * GkTrace - A continuous traceroute providing per-hop loss, latency and jitter
- * statistics.
- *
- * Author: Timothy C. Arland <tcarland@gmail.com> - Charlton Technology, LLC
- * Created: March 19, 2010
- */
+/**
+  * GkTrace - A continuous traceroute providing per-hop loss, latency and jitter
+  * statistics.
+  *
+  * Author: Timothy C. Arland <tcarland@gmail.com> - Charlton Technology, LLC
+  * Created: March 19, 2010
+  *
+  * Copyright (c) 2010-2025 Timothy Charlton Arland <tcarland@gmail.com>
+  *
+  * This file is part of gktrace.
+  *
+  * gktrace is free software: you can redistribute it and/or modify
+  * it under the terms of the GNU General Public License as
+  * published by the Free Software Foundation, either version 3 of
+  * the License, or (at your option) any later version.
+  *
+  * gktrace is distributed in the hope that it will be useful,
+  * but WITHOUT ANY WARRANTY; without even the implied warranty of
+  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+  * GNU General Public License for more details.
+  *
+  * You should have received a copy of the GNU General Public
+  * License along with gktrace.
+  * If not, see <http://www.gnu.org/licenses/>.
+ **/
 #define _GKTRACE_CPP_
 
 extern "C" {
@@ -37,7 +55,7 @@ using namespace tcanetpp;
 namespace gktrace {
 
 
-const char* Version = "v0.6.3";
+const char* Version = "v0.7.1";
 bool        Alarm   = false;
 int         Pid     = 0;
 
@@ -47,7 +65,7 @@ void
 version()
 {
     std::cout << "gktrace " << Version
-              << ", Copyright (C) 2010-2024, Timothy C. Arland (tcarland@gmail.com)" << std::endl 
+              << ", Copyright (C) 2010-2025, Timothy C. Arland <tcarland@gmail.com>" << std::endl 
               << std::endl;
 }
 
@@ -785,3 +803,4 @@ main ( int argc, char ** argv )
     return 0;
 }
 
+//_GKTRACE_CPP_

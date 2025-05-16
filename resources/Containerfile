@@ -1,0 +1,24 @@
+FROM ghcr.io/tcarland/tcalibcore:v25.05.15
+
+USER root
+
+ENV TCAMAKE_HOME=/opt/tcamake
+ENV TCAMAKE_PREFIX=/usr
+ENV TCAMAKE_PROJECT=/opt
+
+COPY . /opt/gktrace
+
+WORKDIR /opt
+
+RUN apt-get -y --no-install-recommends install sudo && \
+    chown -R tdh:tdh /opt/gktrace && \
+    cd /opt/gktrace && \
+    source resources/gktrace-release.env && \
+    make && \
+    make install && \
+    make clean
+
+USER tdh
+
+ENTRYPOINT ["/usr/bin/tini", "--"]
+
