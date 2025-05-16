@@ -10,7 +10,8 @@ COPY . /opt/gktrace
 
 WORKDIR /opt
 
-RUN chown -R tdh:tdh /opt/gktrace && \
+RUN apt-get -y --no-install-recommends sudo \
+    chown -R tdh:tdh /opt/gktrace && \
     cd /opt/gktrace && \
     source resources/gktrace-release.env && \
     make && \
