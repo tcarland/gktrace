@@ -3,6 +3,28 @@ gktrace
 
 Timothy C. Arland <tcarland at gmail dot com>
 
+<notice>
+ *
+ * Copyright (c) 2010-2025 Timothy Charlton Arland <tcarland@gmail.com>
+ *
+ * This file is part of gktrace.
+ *
+ * gktrace is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as
+ * published by the Free Software Foundation, either version 3 of
+ * the License, or (at your option) any later version.
+ *
+ * gktrace is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public
+ * License along with gktrace.
+ * If not, see <http://www.gnu.org/licenses/>.
+ *
+</notice>
+ 
 # Overview
 
 A Traceroute implementation providing continuous per-hop, loss,
@@ -38,16 +60,13 @@ network library.
 ```bash
 git clone https://github.com/tcarland/tcamake.git
 git clone https://github.com/tcarland/tcanetpp.git
-export TCAMAKE_PROJECT="{$project_root}"
-export TCAMAKE_PREFIX=/usr/local
 cd tcanetpp
-source .resources/release_mt.profile
-make
+source resources/release-mt.env
 ```
 
 ## Build gktrace
 
 ```bash
-$ cd ../gktrace
-$ make && sudo make install
+cd ../gktrace
+make && make install
 ```
