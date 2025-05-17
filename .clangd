@@ -6,4 +6,3 @@ CompileFlags:
     - "-DUSE_PTHREADS"
 Diagnostics:
   UnusedIncludes: None
-

@@ -55,7 +55,7 @@ using namespace tcanetpp;
 namespace gktrace {
 
 
-const char* Version = "v0.7.1";
+const char* Version = "v0.7.2";
 bool        Alarm   = false;
 int         Pid     = 0;
 
@@ -82,11 +82,13 @@ usage()
               << "  -I | --icmp          : Use icmp only (for faster path discovery)" << std::endl
               << "  -n | --nodns         : Do not resolve the results" << std::endl
               << "  -m | --maxhops <n>   : Number of consecutive dead hops before stopping discovery" << std::endl
-              << "                         ( default is 3 hops )" << std::endl
-              << "  -p | --port <num>    : Port number mask (dst) for probes. (Default is " << TR_PORT_MASK << ")" << std::endl
+              << "                         (default is 3 hops)" << std::endl
+              << "  -p | --port <num>    : Port number mask (dst) for probes. (Default is " << GKTRACE_TR_PORT_MASK << ")" << std::endl
+              << "  -r | --retries <num> : Number of retries per hop (default is 3)" << std::endl
               << "  -s | --size <bytes>  : Number of bytes to use as payload size" << std::endl
               << "  -t | --timeout <s>   : Seconds before hop is considered non-responsive" << std::endl
               << "                         (minimum is 1 second. Increase for long or bad paths)" << std::endl
+              << "  -U | --udp           : Attempt UDP packets only (default is to ICMP fallback)" << std::endl
               << "  -V | --version       : Print version info and exit" << std::endl << std::endl;
     exit(0);
 }
@@ -253,15 +255,17 @@ main ( int argc, char ** argv )
     char    * target;
     int       optindx   = 0;
     int       retry     = 0;
-    int       interval  = SEQINTERVAL_MS;
-    int       count     = MAXSEQCOUNT;
-    uint16_t  mhoploss  = MAXHOPSLOST;
-    uint16_t  mhoptime  = SEQTIMEOUT;
-    uint16_t  dstportm  = TR_PORT_MASK;
+    int       interval  = GKTRACE_SEQINTERVAL_MS;
+    int       count     = GKTRACE_MAXSEQCOUNT;
+    uint16_t  mhoploss  = GKTRACE_MAXHOPSLOST;
+    uint16_t  mhoptime  = GKTRACE_SEQTIMEOUT;
+    uint16_t  dstportm  = GKTRACE_TR_PORT_MASK;
+    int       retries   = GKTRACE_HOP_RETRIES;
     bool      debug     = false;
     bool      resolve   = true;
     bool      icmp      = false;
-    size_t    size      = DEFAULT_SIZE;
+    bool      udponly   = false;
+    size_t    size      = GKTRACE_DEFAULT_SIZE;
 
     timeval   tvin, tvo, tv;
 
@@ -274,7 +278,9 @@ main ( int argc, char ** argv )
                                       {"maxhops", required_argument, 0, 'm'},
                                       {"port", required_argument, 0, 'p'},
                                       {"size", required_argument, 0, 's'},
+                                      {"retries", required_argument, 0, 'r'},
                                       {"timeout", required_argument, 0, 't'},
+                                      {"udp", no_argument, 0, 'U'},
                                       {"version", no_argument, 0, 'V'},
                                       {0,0,0,0}
                                     };
@@ -308,11 +314,17 @@ main ( int argc, char ** argv )
             case 'p':
                 dstportm = StringUtils::FromString<uint16_t>(optarg);
                 break;
+            case 'r':
+                retries = StringUtils::FromString<int>(optarg);
+                break;
             case 's':
                 size = StringUtils::FromString<size_t>(optarg);
                 break;
             case 't':
                 mhoptime = StringUtils::FromString<int>(optarg);
+                break;
+            case 'U':
+                udponly = true;
                 break;
             case 'V':
                 version();
@@ -354,25 +366,25 @@ main ( int argc, char ** argv )
         usage();
     }
 
-    if ( mhoptime < SEQTIMEOUT ) {
-        mhoptime = SEQTIMEOUT;
+    if ( mhoptime < GKTRACE_SEQTIMEOUT ) {
+        mhoptime = GKTRACE_SEQTIMEOUT;
         std::cout << "Invalid hop timeout, using default of " << mhoptime << " ms" << std::endl;
     }
 
     if ( mhoploss < 2 ) {
-        mhoploss = MAXHOPSLOST;
+        mhoploss = GKTRACE_MAXHOPSLOST;
         std::cout << "Dead hop count must be > 1, using default of " << mhoploss << std::endl;
     }
 
     if ( dstportm < 1024 ) {
-        dstportm = TR_PORT_MASK;
+        dstportm = GKTRACE_TR_PORT_MASK;
         std::cout << "Ignoring dest port value; considered invalid (<1024)" << std::endl;
     }
 
     // init rand data block
     std::string  dataf = "";
-    if ( size > MAX_BUFFER_SIZE )
-        size  = (MAX_BUFFER_SIZE - sizeof(netudp_h) - 4);
+    if ( size > GKTRACE_MAX_BUFFER_SIZE )
+        size  = (GKTRACE_MAX_BUFFER_SIZE - sizeof(netudp_h) - 4);
     size += Serializer::PadLen(size);
     gktrace::initDataBlock(dataf, size);
  
@@ -402,8 +414,8 @@ main ( int argc, char ** argv )
     ssize_t       wt, rd;
 
     uint16_t port = dstportm;    // port mask for ttl counting
-    uint16_t srcp = TR_PORT_SRC;
-    buflen        = MAX_BUFFER_SIZE;
+    uint16_t srcp = GKTRACE_TR_PORT_SRC;
+    buflen        = GKTRACE_MAX_BUFFER_SIZE;
     idsz          = sizeof(netudp_h) + size;
 
     CircularBuffer * rbuff = new tcanetpp::CircularBuffer(buflen);
@@ -513,7 +525,7 @@ main ( int argc, char ** argv )
                     }
                     else 
                     { 
-                        if ( retry < 3 ) 
+                        if ( retry < retries ) 
                         {
                             if ( retry == 0 ) {
                                 std::cout << std::setw(2) << ttl << ": "
@@ -528,10 +540,14 @@ main ( int argc, char ** argv )
                             retry++;
                             continue;
                         }
-                        
-                        std::cout << std::setw(4) << "   !<u>" << std::endl;
-                        pdata.proto = SOCKET_ICMP;
-                        retry       = 0;
+                       
+                        if ( ! udponly ) { 
+                            std::cout << std::setw(4) << "   !<u>" << std::endl;
+                            pdata.proto = SOCKET_ICMP;
+                            retry       = 0;
+                        } else {
+                            continue;
+                        }
                     }
                 }
 
