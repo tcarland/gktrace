@@ -75,4 +75,3 @@ else
 	( sudo chown root $(BIN) )
 	( sudo chmod u+s $(BIN) )
 endif
-

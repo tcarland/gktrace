@@ -1,4 +1,12 @@
-FROM ghcr.io/tcarland/tcalibcore:v25.05.15
+FROM ghcr.io/tcarland/tcalibcore:v26.01.01
+ARG RELEASE_VERSION=""
+
+LABEL org.opencontainers.image.authors="Timothy C. Arland <tcarland at gmail.com>" \
+      org.opencontainers.image.base.name="ghcr.io/tcarland/tcalibcore:v26.01.001" \
+      org.opencontainers.image.description="gktrace Container" \
+      org.opencontainers.image.source="https://github.com/tcarland/gktrace" \
+      org.opencontainers.image.title="gktrace" \
+      org.opencontainers.image.version="${RELEASE_VERSION}"
 
 USER root
 
@@ -15,10 +23,10 @@ RUN apt-get -y --no-install-recommends install sudo && \
     cd /opt/gktrace && \
     source resources/gktrace-release.env && \
     make && \
+    chown -R tdh:tdh /opt/gktrace/gktrace && \
     make install && \
     make clean
 
 USER tdh
 
-ENTRYPOINT ["/usr/bin/tini", "--"]
-
+ENTRYPOINT ["/usr/bin/tini", "--", "/opt/gktrace/gktrace"]
