@@ -5,7 +5,7 @@ Timothy C. Arland <tcarland at gmail dot com>
 
 <notice>
  *
- * Copyright (c) 2010-2025 Timothy Charlton Arland <tcarland@gmail.com>
+ * Copyright (c) 2010-2026 Timothy Charlton Arland <tcarland@gmail.com>
  *
  * This file is part of gktrace.
  *

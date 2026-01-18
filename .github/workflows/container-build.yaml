@@ -40,6 +40,8 @@ jobs:
       with:
         context: .
         file: ./resources/Containerfile
-        push: false
+        push: true
         tags: ${{ steps.meta.outputs.tags }}
         labels: ${{ steps.meta.outputs.labels }}
+        build-args: |
+          RELEASE_VERSION=${{ steps.meta.outputs.version }}

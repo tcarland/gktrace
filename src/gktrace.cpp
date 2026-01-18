@@ -5,7 +5,7 @@
   * Author: Timothy C. Arland <tcarland@gmail.com> - Charlton Technology, LLC
   * Created: March 19, 2010
   *
-  * Copyright (c) 2010-2025 Timothy Charlton Arland <tcarland@gmail.com>
+  * Copyright (c) 2010-2026 Timothy Charlton Arland <tcarland@gmail.com>
   *
   * This file is part of gktrace.
   *
@@ -55,7 +55,7 @@ using namespace tcanetpp;
 namespace gktrace {
 
 
-const char* Version = "v0.7.2";
+const char* Version = "v0.7.3";
 bool        Alarm   = false;
 int         Pid     = 0;
 
@@ -65,7 +65,7 @@ void
 version()
 {
     std::cout << "gktrace " << Version
-              << ", Copyright (C) 2010-2025, Timothy C. Arland <tcarland@gmail.com>" << std::endl 
+              << ", Copyright (C) 2010-2026, Timothy C. Arland <tcarland@gmail.com>" << std::endl 
               << std::endl;
 }
 
