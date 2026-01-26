@@ -1,0 +1,44 @@
+# gktrace_hexes Makefile (libhexes / ncurses UI)
+NEED_NCURSES = 1
+
+ifdef TCAMAKE_DEBUG
+OPT_FLAGS = -g
+else
+OPT_FLAGS = -O2
+endif
+
+INCLUDES = -I. -Isrc -I../libhexes/include
+LIBS = -L../libhexes/lib -lhexes
+CXXFLAGS = -std=c++23
+
+GKTRACE_HEXES = gktrace_hexes
+
+BIN = $(GKTRACE_HEXES)
+OBJS = src/gktrace_hexes.o
+ALL_OBJS = $(OBJS) $(COBJS)
+ALL_BINS = $(BIN)
+
+ifeq ($(TCAMAKE_HOME),)
+	export TCAMAKE_HOME := $(shell realpath ../tcamake)
+endif
+
+include $(TCAMAKE_HOME)/tcamake_include
+
+all: $(GKTRACE_HEXES)
+
+.PHONY: libhexes
+libhexes:
+	( cd ../libhexes && $(MAKE) lib )
+
+$(GKTRACE_HEXES): $(OBJS) | libhexes
+	$(make-cxxbin-rule)
+	@echo
+
+clean:
+	$(RM) $(ALL_OBJS) \
+	*.d *.D *.o src/*.d src/*.D src/*.bd src/*.o
+	@echo
+
+distclean: clean
+	$(RM) $(ALL_BINS)
+	@echo

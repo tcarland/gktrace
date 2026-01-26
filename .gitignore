@@ -27,3 +27,6 @@
 *.sw*
 compile_flags.txt
 gktrace
+gkhextrace
+gktrace_hexes
+

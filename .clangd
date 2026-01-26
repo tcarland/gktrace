@@ -1,6 +1,7 @@
 CompileFlags:
   Add:
     - "--include-directory=./include"
+    - "--include-directory=../libhexes/include"
     - "-xc++"
     - "-DUSE_LIBRT"
     - "-DUSE_PTHREADS"
