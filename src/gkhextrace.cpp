@@ -151,8 +151,8 @@ class GkHexTraceApp final : public hexes::HexApp {
         this->setBorderActiveColor(hexes::HEX_GREEN);
 
         _consoleHeight = 4;
-        _statusHeight = 2;
-        _titleHeight = 1;
+        _statusHeight  = 2;
+        _titleHeight   = 1;
 
         _mainStack = new hexes::HexStack(
             "main-stack",
@@ -193,32 +193,32 @@ class GkHexTraceApp final : public hexes::HexApp {
         _consoleInput->setPrefix(_prompt);
 
         auto* first = _mainStack->currentPanel();
-        if (first) {
+        if ( first ) {
             first->enableScroll(true);
-            first->setMaxLines(5000);
+            first->setMaxLines(15000);
             first->setDrawBorder(true);
         }
 
         updateMainTitles();
 
-        const std::string top = std::string("  gkhextrace  -  libhexes ") + LIBHEXES_VERSION;
-        this->print(0, 1, top, hexes::HEX_RED, hexes::HEX_BOLD);
+        //const std::string top = std::string("  gkhextrace  -  libhexes ") + LIBHEXES_VERSION;
+        //this->print(0, 1, top, hexes::HEX_RED, hexes::HEX_BOLD);
 
         this->setFocus(_consolePanel);
         syncMainFocusIndicator();
         this->timeout(100);
 
-        if (!_gktraceArgs.empty()) {
+        if ( ! _gktraceArgs.empty() ) {
             startChild();
-        } else if (auto* p = currentCapturePanel()) {
+        } else if ( auto * p = currentCapturePanel() ) {
             p->addText("-- idle: type gktrace args in the bottom console and press ENTER --");
         }
         renderStatus();
 
         bool quit = false;
         bool wcmd = false;
-        while (!quit) {
-            if (g_sigintRequested) {
+        while ( ! quit ) {
+            if ( g_sigintRequested ) {
                 g_sigintRequested = 0;
                 interruptChild();
                 renderStatus();
@@ -226,7 +226,7 @@ class GkHexTraceApp final : public hexes::HexApp {
 
             drainOutput();
 
-            if (this->resized()) {
+            if ( this->resized() ) {
                 resize();
                 renderStatus();
             }
@@ -239,7 +239,7 @@ class GkHexTraceApp final : public hexes::HexApp {
             // non-focused panels to consume keystrokes.
             // This shows up as "only a few characters captured" in the console.
             hexes::HexPanel* cur = this->getPanel();
-            const int ch = (cur != nullptr) ? cur->poll() : ERR;
+            const int ch = ( cur != nullptr ) ? cur->poll() : ERR;
             if ( ch == KEY_RESIZE && this->resized() ) {
                 resize();
                 renderStatus();
@@ -582,42 +582,38 @@ class GkHexTraceApp final : public hexes::HexApp {
             return;
         }
 
-        std::ostringstream def;
-        def << "gktrace-panel-" << (_mainStack ? (_mainStack->currentIndex() + 1) : 1) << ".log";
+        _statusPanel->addText("-- saving current panel --");
 
         hexes::HexDialog d("save", hexes::HexString("Save panel output", hexes::HEX_CYAN, hexes::HEX_BOLD));
         d.setDrawTitle(false);
         d.setTextColor(hexes::HEX_WHITE);
         d.setBorderColor(hexes::HEX_GREEN);
         d.echoResults(true);
-        d.setMaxInput(256);
+        d.setMaxInput(32);
         d.addText("\nEnter filename to save current panel:\n\n", hexes::HEX_WHITE, hexes::HEX_NORMAL);
-        d.addText(def.str(), hexes::HEX_YELLOW, hexes::HEX_BOLD);
-        d.addText("\n\n<OK>", hexes::HEX_CYAN, hexes::HEX_BOLD);
         d.showDialog();
 
         std::string out = d.getResult();
-        if ( out.empty() ) {
-            // dialog returns empty if user cancelled; default to suggested filename
-            out = def.str();
-        }
+        if ( out.empty() )
+            return;
 
         std::ofstream ofs(out, std::ios::out | std::ios::trunc);
         if ( ! ofs ) {
-            if ( _statusPanel ) {
-                _statusPanel->addText(std::string("save failed: ") + std::strerror(errno));
-            }
+            _statusPanel->addText(std::string("save failed: ") + std::strerror(errno));
             return;
         }
 
-        for ( const auto& hx : p->getTextList() ) {
+        for ( const auto & hx : p->getTextList() ) {
             ofs << hx.str() << "\n";
         }
 
         if ( _statusPanel ) {
             _statusPanel->addText(std::string("saved: ") + out);
         }
+
+        return;
     }
+
 
     void startChild()
     {
