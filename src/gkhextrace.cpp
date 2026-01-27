@@ -24,12 +24,15 @@
 
 namespace {
 
+const char* GkHexVersion = "v0.7.4";
+
 volatile sig_atomic_t g_sigintRequested = 0;
 
 extern "C" void onSigInt(int)
 {
     g_sigintRequested = 1;
 }
+
 
 std::string joinCommand ( const std::string & exe, const std::vector<std::string> & args )
 {
@@ -47,6 +50,7 @@ std::string joinCommand ( const std::string & exe, const std::vector<std::string
     return oss.str();
 }
 
+
 std::string fitToWidth ( const std::string & s, int width )
 {
     if ( width <= 0 ) {
@@ -62,6 +66,7 @@ std::string fitToWidth ( const std::string & s, int width )
     }
     return s.substr(0, static_cast<size_t>(maxLen - 3)) + "...";
 }
+
 
 std::vector<std::string> splitArgs ( const std::string & input )
 {
@@ -129,10 +134,12 @@ std::vector<std::string> splitArgs ( const std::string & input )
 
 namespace gkhextrace {
 
-class GkHexTraceApp final : public hexes::HexApp {
+class GkHexTraceApp final : public hexes::HexApp 
+{
   public:
+
     GkHexTraceApp(std::string gktracePath, std::vector<std::string> gktraceArgs)
-        : _gktracePath(std::move(gktracePath)), _gktraceArgs(std::move(gktraceArgs))
+      : _gktracePath(std::move(gktracePath)), _gktraceArgs(std::move(gktraceArgs))
     {}
 
     ~GkHexTraceApp() override
@@ -140,13 +147,14 @@ class GkHexTraceApp final : public hexes::HexApp {
         stopChild();
     }
 
-    void run() override
+    void 
+    run() override
     {
         // Intercept SIGINT so Ctrl-C can be used to interrupt the running
         // gktrace process without killing the UI.
         std::signal(SIGINT, onSigInt);
 
-        this->setCursor(1);
+        this->setCursor(0);
         this->setBorderColor(hexes::HEX_WHITE);
         this->setBorderActiveColor(hexes::HEX_GREEN);
 
@@ -201,8 +209,8 @@ class GkHexTraceApp final : public hexes::HexApp {
 
         updateMainTitles();
 
-        //const std::string top = std::string("  gkhextrace  -  libhexes ") + LIBHEXES_VERSION;
-        //this->print(0, 1, top, hexes::HEX_RED, hexes::HEX_BOLD);
+        const std::string top = std::string("  gkhextrace  -  ") + GkHexVersion;
+        this->print(0, 1, top, hexes::HEX_RED, hexes::HEX_BOLD);
 
         this->setFocus(_consolePanel);
         syncMainFocusIndicator();
