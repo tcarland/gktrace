@@ -8,13 +8,14 @@ OPT_FLAGS = -O2
 endif
 
 INCLUDES = -I. -Isrc -I../libhexes/include
-LIBS = -L../libhexes/lib -lhexes
+LIBS     = -L../libhexes/lib -lhexes
 CXXFLAGS = -std=c++23
 
 GKHEXTRACE = gkhextrace
 
-BIN = $(GKHEXTRACE)
+BIN  = $(GKHEXTRACE)
 OBJS = src/gkhextrace.o
+
 ALL_OBJS = $(OBJS) $(COBJS)
 ALL_BINS = $(BIN)
 
@@ -24,11 +25,15 @@ endif
 
 include $(TCAMAKE_HOME)/tcamake_include
 
-all: $(GKHEXTRACE)
+all: gktrace $(GKHEXTRACE)
 
 .PHONY: libhexes
 libhexes:
 	( cd ../libhexes && $(MAKE) lib )
+
+.PHONY: gktrace
+gktrace:
+	( $(MAKE) all install )
 
 $(GKHEXTRACE): $(OBJS) | libhexes
 	$(make-cxxbin-rule)
