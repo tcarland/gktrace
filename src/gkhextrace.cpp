@@ -127,15 +127,15 @@ std::vector<std::string> splitArgs(const std::string& input)
 
 } // namespace
 
-namespace gktrace_hexes {
+namespace gkhextrace {
 
-class GKTraceHexesApp final : public hexes::HexApp {
+class GkHexTraceApp final : public hexes::HexApp {
   public:
-    GKTraceHexesApp(std::string gktracePath, std::vector<std::string> gktraceArgs)
+    GkHexTraceApp(std::string gktracePath, std::vector<std::string> gktraceArgs)
         : _gktracePath(std::move(gktracePath)), _gktraceArgs(std::move(gktraceArgs))
     {}
 
-    ~GKTraceHexesApp() override
+    ~GkHexTraceApp() override
     {
         stopChild();
     }
@@ -201,7 +201,7 @@ class GKTraceHexesApp final : public hexes::HexApp {
 
         updateMainTitles();
 
-        const std::string top = std::string("  gktrace_hexes  -  libhexes ") + LIBHEXES_VERSION;
+        const std::string top = std::string("  gkhextrace  -  libhexes ") + LIBHEXES_VERSION;
         this->print(0, 1, top, hexes::HEX_RED, hexes::HEX_BOLD);
 
         this->setFocus(_consolePanel);
@@ -240,33 +240,33 @@ class GKTraceHexesApp final : public hexes::HexApp {
             // This shows up as "only a few characters captured" in the console.
             hexes::HexPanel* cur = this->getPanel();
             const int ch = (cur != nullptr) ? cur->poll() : ERR;
-            if (ch == KEY_RESIZE && this->resized()) {
+            if ( ch == KEY_RESIZE && this->resized() ) {
                 resize();
                 renderStatus();
                 continue;
             }
-            if (ch == ERR) {
+            if ( ch == ERR ) {
                 continue;
             }
 
             // If the terminal is in raw mode (or on some keymaps), Ctrl-C can
             // arrive as an input character instead of SIGINT.
-            if (ch == 3 /* ETX */) {
+            if ( ch == 3 /* ETX */ ) {
                 interruptChild();
                 renderStatus();
                 continue;
             }
 
             // Global window command: CTRL-w then UP/DOWN switches focus.
-            if (wcmd) {
+            if ( wcmd ) {
                 wcmd = false;
-                if (_consoleInput) {
+                if ( _consoleInput ) {
                     _consoleInput->setParse(true);
                 }
-                if (ch == KEY_DOWN) {
+                if ( ch == KEY_DOWN ) {
                     this->setFocusNext();
                     syncMainFocusIndicator();
-                } else if (ch == KEY_UP) {
+                } else if ( ch == KEY_UP ) {
                     this->setFocusPrev();
                     syncMainFocusIndicator();
                 }
@@ -274,9 +274,9 @@ class GKTraceHexesApp final : public hexes::HexApp {
                 continue;
             }
 
-            if (ch == hexes::HEX_KEY_WINDOW) {
+            if ( ch == hexes::HEX_KEY_WINDOW ) {
                 wcmd = true;
-                if (cur == _consolePanel && _consoleInput) {
+                if ( cur == _consolePanel && _consoleInput ) {
                     _consoleInput->setParse(false);
                 }
                 renderStatus();
@@ -284,7 +284,7 @@ class GKTraceHexesApp final : public hexes::HexApp {
             }
 
             // Quick jump to the command prompt.
-            if (ch == ':') {
+            if ( ch == ':' ) {
                 this->setFocus(_consolePanel);
                 syncMainFocusIndicator();
                 renderStatus();
@@ -292,8 +292,8 @@ class GKTraceHexesApp final : public hexes::HexApp {
             }
 
             // Console input takes priority when focused.
-            if (cur == _consolePanel && _consoleInput) {
-                if (_consoleInput->isReady()) {
+            if ( cur == _consolePanel && _consoleInput ) {
+                if ( _consoleInput->isReady() ) {
                     std::string cmdline = _consoleInput->getLine();
 
                     // Reset handler ready state + push history (no-op key).
@@ -308,12 +308,12 @@ class GKTraceHexesApp final : public hexes::HexApp {
                 }
 
                 // If the line is empty, allow quick quit/help.
-                if (_consoleInput->getLine().empty()) {
-                    if (ch == 'q' || ch == 'Q') {
+                if ( _consoleInput->getLine().empty() ) {
+                    if ( ch == 'q' || ch == 'Q' ) {
                         quit = true;
                         continue;
                     }
-                    if (ch == 'h' || ch == '?') {
+                    if ( ch == 'h' || ch == '?' ) {
                         showHelp();
                         renderStatus();
                         continue;
@@ -324,14 +324,14 @@ class GKTraceHexesApp final : public hexes::HexApp {
                 continue;
             }
 
-            if (ch == 'q' || ch == 'Q') {
+            if ( ch == 'q' || ch == 'Q' ) {
                 quit = true;
-            } else if (ch == 'h' || ch == '?') {
+            } else if ( ch == 'h' || ch == '?' ) {
                 showHelp();
                 renderStatus();
-            } else if (ch == 'n') {
+            } else if ( ch == 'n' ) {
                 auto* p = _mainStack->createPanel();
-                if (p) {
+                if ( p ) {
                     p->enableScroll(true);
                     p->setMaxLines(5000);
                     p->setDrawBorder(true);
@@ -340,34 +340,34 @@ class GKTraceHexesApp final : public hexes::HexApp {
                     syncMainFocusIndicator();
                     renderStatus();
                 }
-            } else if (ch == 'k') {
-                if (_mainStack->killCurrentPanel()) {
+            } else if ( ch == 'k' ) {
+                if ( _mainStack->killCurrentPanel() ) {
                     updateMainTitles();
                     syncMainFocusIndicator();
                     renderStatus();
                 }
-            } else if (ch == KEY_RIGHT || ch == '\t') {
+            } else if ( ch == KEY_RIGHT || ch == '\t' ) {
                 _mainStack->nextPanel();
                 updateMainTitles();
                 syncMainFocusIndicator();
                 renderStatus();
-            } else if (ch == KEY_LEFT) {
+            } else if ( ch == KEY_LEFT ) {
                 _mainStack->prevPanel();
                 updateMainTitles();
                 syncMainFocusIndicator();
                 renderStatus();
-            } else if (ch == 's' || ch == 'S') {
+            } else if ( ch == 's' || ch == 'S' ) {
                 saveCurrentPanel();
                 renderStatus();
-            } else if (ch == KEY_UP) {
+            } else if ( ch == KEY_UP ) {
                 if (auto* p = currentCapturePanel()) {
                     p->scrollUp();
                 }
-            } else if (ch == KEY_DOWN) {
+            } else if ( ch == KEY_DOWN ) {
                 if (auto* p = currentCapturePanel()) {
                     p->scrollDown();
                 }
-            } else if (ch == 'c' || ch == 'C') {
+            } else if ( ch == 'c' || ch == 'C' ) {
                 if (auto* p = currentCapturePanel()) {
                     p->clear();
                 }
@@ -378,7 +378,7 @@ class GKTraceHexesApp final : public hexes::HexApp {
   protected:
     void resize() override
     {
-        if (!_mainStack || !_statusPanel || !_consolePanel) {
+        if ( !_mainStack || !_statusPanel || !_consolePanel ) {
             return;
         }
 
@@ -396,7 +396,7 @@ class GKTraceHexesApp final : public hexes::HexApp {
         _consolePanel->erase();
         _consolePanel->moveWindow(ht - _consoleHeight, 0);
         _consolePanel->setText(_prompt);
-        if (_consoleInput) {
+        if ( _consoleInput ) {
             _consoleInput->setPrefix(_prompt);
         }
 
@@ -407,8 +407,8 @@ class GKTraceHexesApp final : public hexes::HexApp {
   private:
     void interruptChild()
     {
-        if (_childPid <= 0) {
-            if (_statusPanel) {
+        if ( _childPid <= 0 ) {
+            if ( _statusPanel ) {
                 _statusPanel->addText("interrupt: no running gktrace");
             }
             return;
@@ -419,7 +419,7 @@ class GKTraceHexesApp final : public hexes::HexApp {
         const pid_t target = (_childHasOwnPgrp ? -_childPid : _childPid);
         ::kill(target, SIGINT);
 
-        if (auto* p = currentCapturePanel()) {
+        if ( auto* p = currentCapturePanel() ) {
             p->addText("-- interrupt (SIGINT) sent --");
         }
     }
@@ -432,11 +432,11 @@ class GKTraceHexesApp final : public hexes::HexApp {
         // app focus is on the main stack.
         auto* focused = this->getPanel();
         auto* cur = currentCapturePanel();
-        if (!cur) {
+        if ( ! cur ) {
             return;
         }
 
-        if (focused == _mainStack) {
+        if ( focused == _mainStack ) {
             // Ensure border uses our active color.
             cur->setBorderActiveColor(hexes::HEX_GREEN);
             cur->setBorderColor(hexes::HEX_WHITE);
@@ -449,13 +449,13 @@ class GKTraceHexesApp final : public hexes::HexApp {
     std::string focusedWindowName()
     {
         auto* focused = this->getPanel();
-        if (focused == _mainStack) {
+        if ( focused == _mainStack ) {
             return "OUTPUT";
         }
-        if (focused == _consolePanel) {
+        if ( focused == _consolePanel ) {
             return "CONSOLE";
         }
-        if (focused == _statusPanel) {
+        if ( focused == _statusPanel ) {
             return "STATUS";
         }
         return focused ? focused->getPanelName() : std::string("(none)");
@@ -468,14 +468,14 @@ class GKTraceHexesApp final : public hexes::HexApp {
 
     void updateMainTitles()
     {
-        if (!_mainStack) {
+        if ( ! _mainStack ) {
             return;
         }
 
         const size_t total = _mainStack->panelCount();
-        for (size_t i = 0; i < total; ++i) {
+        for ( size_t i = 0; i < total; ++i ) {
             auto* p = _mainStack->panelAt(i);
-            if (!p) {
+            if ( ! p ) {
                 continue;
             }
             std::ostringstream t;
@@ -489,7 +489,7 @@ class GKTraceHexesApp final : public hexes::HexApp {
 
     void renderStatus()
     {
-        if (!_statusPanel) {
+        if ( ! _statusPanel ) {
             return;
         }
 
@@ -500,7 +500,7 @@ class GKTraceHexesApp final : public hexes::HexApp {
               << " | : console | Ctrl-w Up/Down focus | n new k kill | Tab next Left prev | s save c clear q quit";
 
         std::ostringstream line2;
-        if (_childPid > 0) {
+        if ( _childPid > 0 ) {
             line2 << "Running: " << joinCommand(_gktracePath, _gktraceArgs);
         } else {
             line2 << "Idle: type args and press ENTER";
@@ -514,26 +514,26 @@ class GKTraceHexesApp final : public hexes::HexApp {
     void handleConsoleCommand(const std::string& cmdline, bool& quit)
     {
         auto tokens = splitArgs(cmdline);
-        if (tokens.empty()) {
+        if ( tokens.empty() ) {
             return;
         }
 
         const std::string& verb = tokens[0];
-        if (verb == "/quit" || verb == "quit" || verb == "exit") {
+        if ( verb == "/quit" || verb == "quit" || verb == "exit" ) {
             quit = true;
             return;
         }
-        if (verb == "/help" || verb == "help" || verb == "?") {
+        if ( verb == "/help" || verb == "help" || verb == "?" ) {
             showHelp();
             return;
         }
 
         // Treat the line as gktrace args; if user included the binary name, drop it.
-        if (!tokens.empty() && (tokens[0] == "gktrace" || tokens[0].ends_with("/gktrace"))) {
+        if ( ! tokens.empty() && (tokens[0] == "gktrace" || tokens[0].ends_with("/gktrace")) ) {
             tokens.erase(tokens.begin());
         }
 
-        if (auto* p = currentCapturePanel()) {
+        if ( auto* p = currentCapturePanel() ) {
             p->addText(std::string("-- exec: ") + joinCommand(_gktracePath, tokens));
         }
 
@@ -578,7 +578,7 @@ class GKTraceHexesApp final : public hexes::HexApp {
     void saveCurrentPanel()
     {
         auto* p = currentCapturePanel();
-        if (!p) {
+        if ( ! p ) {
             return;
         }
 
@@ -597,44 +597,44 @@ class GKTraceHexesApp final : public hexes::HexApp {
         d.showDialog();
 
         std::string out = d.getResult();
-        if (out.empty()) {
+        if ( out.empty() ) {
             // dialog returns empty if user cancelled; default to suggested filename
             out = def.str();
         }
 
         std::ofstream ofs(out, std::ios::out | std::ios::trunc);
-        if (!ofs) {
-            if (_statusPanel) {
+        if ( ! ofs ) {
+            if ( _statusPanel ) {
                 _statusPanel->addText(std::string("save failed: ") + std::strerror(errno));
             }
             return;
         }
 
-        for (const auto& hx : p->getTextList()) {
+        for ( const auto& hx : p->getTextList() ) {
             ofs << hx.str() << "\n";
         }
 
-        if (_statusPanel) {
+        if ( _statusPanel ) {
             _statusPanel->addText(std::string("saved: ") + out);
         }
     }
 
     void startChild()
     {
-        if (_childPid > 0) {
+        if ( _childPid > 0 ) {
             return;
         }
 
         int pipefd[2] = {-1, -1};
         if (pipe(pipefd) != 0) {
-            if (_statusPanel) {
+            if ( _statusPanel ) {
                 _statusPanel->addText(std::string("pipe() failed: ") + std::strerror(errno));
             }
             return;
         }
 
         const pid_t pid = fork();
-        if (pid == 0) {
+        if ( pid == 0 ) {
             // child
             // Put gktrace in its own process group so Ctrl-C can be handled by
             // the UI and forwarded intentionally.
@@ -659,9 +659,9 @@ class GKTraceHexesApp final : public hexes::HexApp {
         // parent
         ::close(pipefd[1]);
 
-        if (pid < 0) {
+        if ( pid < 0 ) {
             ::close(pipefd[0]);
-            if (_statusPanel) {
+            if ( _statusPanel ) {
                 _statusPanel->addText(std::string("fork() failed: ") + std::strerror(errno));
             }
             return;
@@ -677,7 +677,7 @@ class GKTraceHexesApp final : public hexes::HexApp {
         _stopReader.store(false);
         _reader = std::thread([this]() { readerLoop(); });
 
-        if (auto* p = currentCapturePanel()) {
+        if ( auto* p = currentCapturePanel() ) {
             p->addText(std::string("-- started: ") + joinCommand(_gktracePath, _gktraceArgs));
         }
     }
@@ -686,21 +686,21 @@ class GKTraceHexesApp final : public hexes::HexApp {
     {
         _stopReader.store(true);
 
-        if (_childPid > 0) {
+        if ( _childPid > 0 ) {
             const pid_t target = (_childHasOwnPgrp ? -_childPid : _childPid);
             ::kill(target, SIGTERM);
         }
 
-        if (_childFd >= 0) {
+        if ( _childFd >= 0 ) {
             ::close(_childFd);
             _childFd = -1;
         }
 
-        if (_reader.joinable()) {
+        if ( _reader.joinable() ) {
             _reader.join();
         }
 
-        if (_childPid > 0) {
+        if ( _childPid > 0 ) {
             int status = 0;
             ::waitpid(_childPid, &status, 0);
             _childPid = -1;
@@ -713,17 +713,17 @@ class GKTraceHexesApp final : public hexes::HexApp {
         std::string carry;
         std::array<char, 4096> buf{};
 
-        while (!_stopReader.load()) {
-            if (_childFd < 0) {
+        while ( ! _stopReader.load() ) {
+            if ( _childFd < 0 ) {
                 break;
             }
 
             const ssize_t n = ::read(_childFd, buf.data(), buf.size());
-            if (n > 0) {
+            if ( n > 0 ) {
                 carry.append(buf.data(), static_cast<size_t>(n));
 
                 size_t pos = 0;
-                while (true) {
+                while ( true ) {
                     const size_t nl = carry.find('\n', pos);
                     if (nl == std::string::npos) {
                         carry.erase(0, pos);
@@ -735,18 +735,18 @@ class GKTraceHexesApp final : public hexes::HexApp {
                     std::lock_guard<std::mutex> lk(_pendingMu);
                     _pendingLines.push_back(std::move(line));
                 }
-            } else if (n == 0) {
+            } else if ( n == 0 ) {
                 // EOF
                 break;
             } else {
-                if (errno == EINTR) {
+                if ( errno == EINTR ) {
                     continue;
                 }
                 break;
             }
         }
 
-        if (!carry.empty()) {
+        if ( ! carry.empty() ) {
             std::lock_guard<std::mutex> lk(_pendingMu);
             _pendingLines.push_back(std::move(carry));
         }
@@ -757,20 +757,20 @@ class GKTraceHexesApp final : public hexes::HexApp {
     void drainOutput()
     {
         auto* p = currentCapturePanel();
-        if (!p) {
+        if ( ! p ) {
             return;
         }
 
         std::deque<std::string> local;
         {
             std::lock_guard<std::mutex> lk(_pendingMu);
-            if (_pendingLines.empty()) {
+            if ( _pendingLines.empty() ) {
                 return;
             }
             local.swap(_pendingLines);
         }
 
-        for (auto& line : local) {
+        for ( auto & line : local ) {
             p->addText(line);
         }
     }
@@ -801,22 +801,22 @@ class GKTraceHexesApp final : public hexes::HexApp {
 
 } // namespace gktrace_hexes
 
-int main(int argc, char** argv)
+int main ( int argc, char** argv )
 {
     std::string gktraceBin = "./gktrace";
-    if (const char* env = std::getenv("GKTRACE_BIN")) {
-        if (env[0] != '\0') {
+    if ( const char* env = std::getenv("GKTRACE_BIN") ) {
+        if ( env[0] != '\0' ) {
             gktraceBin = env;
         }
     }
 
     std::vector<std::string> gktraceArgs;
     gktraceArgs.reserve(static_cast<size_t>(argc > 1 ? argc - 1 : 0));
-    for (int i = 1; i < argc; ++i) {
+    for ( int i = 1; i < argc; ++i ) {
         gktraceArgs.emplace_back(argv[i]);
     }
 
-    gktrace_hexes::GKTraceHexesApp app(std::move(gktraceBin), std::move(gktraceArgs));
+    gkhextrace::GkHexTraceApp app(std::move(gktraceBin), std::move(gktraceArgs));
     app.run();
     return 0;
 }

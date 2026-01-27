@@ -4,6 +4,8 @@
             "name": "Linux",
             "includePath": [
                 "${workspaceFolder}/**",
+                "${workspaceFolder}/src",
+                "${workspaceFolder}/../libhexes/include",
                 "${workspaceFolder}/../tcanetpp/include"
             ],
             "defines": [
