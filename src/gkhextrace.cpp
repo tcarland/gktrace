@@ -31,14 +31,14 @@ extern "C" void onSigInt(int)
     g_sigintRequested = 1;
 }
 
-std::string joinCommand(const std::string& exe, const std::vector<std::string>& args)
+std::string joinCommand ( const std::string & exe, const std::vector<std::string> & args )
 {
     std::ostringstream oss;
     oss << exe;
-    for (const auto& a : args) {
+    for ( const auto & a : args ) {
         oss << ' ';
         // lightweight quoting for display only
-        if (a.find(' ') != std::string::npos) {
+        if ( a.find(' ') != std::string::npos ) {
             oss << '"' << a << '"';
         } else {
             oss << a;
@@ -47,23 +47,23 @@ std::string joinCommand(const std::string& exe, const std::vector<std::string>& 
     return oss.str();
 }
 
-std::string fitToWidth(const std::string& s, int width)
+std::string fitToWidth ( const std::string & s, int width )
 {
-    if (width <= 0) {
+    if ( width <= 0 ) {
         return s;
     }
     // Leave 1 column of slack to avoid bottom-right edge quirks.
     const int maxLen = width - 1;
-    if (maxLen <= 0 || static_cast<int>(s.size()) <= maxLen) {
+    if ( maxLen <= 0 || static_cast<int>(s.size()) <= maxLen ) {
         return s;
     }
-    if (maxLen <= 3) {
+    if ( maxLen <= 3 ) {
         return s.substr(0, static_cast<size_t>(maxLen));
     }
     return s.substr(0, static_cast<size_t>(maxLen - 3)) + "...";
 }
 
-std::vector<std::string> splitArgs(const std::string& input)
+std::vector<std::string> splitArgs ( const std::string & input )
 {
     std::vector<std::string> out;
     std::string cur;
@@ -73,47 +73,47 @@ std::vector<std::string> splitArgs(const std::string& input)
     bool escape = false;
 
     auto flush = [&]() {
-        if (!cur.empty()) {
+        if ( ! cur.empty() ) {
             out.push_back(cur);
             cur.clear();
         }
     };
 
-    for (char c : input) {
-        if (escape) {
+    for ( char c : input ) {
+        if ( escape ) {
             cur.push_back(c);
             escape = false;
             continue;
         }
 
-        if (mode != Mode::SingleQuote && c == '\\') {
+        if ( mode != Mode::SingleQuote && c == '\\' ) {
             escape = true;
             continue;
         }
 
-        if (mode == Mode::Normal) {
-            if (c == '\'') {
+        if ( mode == Mode::Normal ) {
+            if ( c == '\'' ) {
                 mode = Mode::SingleQuote;
                 continue;
             }
-            if (c == '"') {
+            if ( c == '\"' ) {
                 mode = Mode::DoubleQuote;
                 continue;
             }
-            if (c == ' ' || c == '\t' || c == '\n' || c == '\r') {
+            if ( c == ' ' || c == '\t' || c == '\n' || c == '\r' ) {
                 flush();
                 continue;
             }
             cur.push_back(c);
-        } else if (mode == Mode::SingleQuote) {
-            if (c == '\'') {
+        } else if ( mode == Mode::SingleQuote ) {
+            if ( c == '\'' ) {
                 mode = Mode::Normal;
                 continue;
             }
             cur.push_back(c);
         } else {
             // DoubleQuote
-            if (c == '"') {
+            if ( c == '"' ) {
                 mode = Mode::Normal;
                 continue;
             }
