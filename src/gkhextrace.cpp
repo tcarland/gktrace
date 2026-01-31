@@ -40,14 +40,13 @@ joinCommand ( const std::string & exe, const std::vector<std::string> & args )
 {
     std::ostringstream oss;
     oss << exe;
-    for ( const auto & a : args ) {
+    for ( const auto & a : args )
+    {
         oss << ' ';
-        // lightweight quoting for display only
-        if ( a.find(' ') != std::string::npos ) {
+        if ( a.find(' ') != std::string::npos )
             oss << '"' << a << '"';
-        } else {
+        else
             oss << a;
-        }
     }
     return oss.str();
 }
@@ -56,17 +55,17 @@ joinCommand ( const std::string & exe, const std::vector<std::string> & args )
 std::string
 fitToWidth ( const std::string & s, int width )
 {
-    if ( width <= 0 ) {
+    if ( width <= 0 )
         return s;
-    }
+ 
     // Leave 1 column of slack to avoid bottom-right edge quirks.
     const int maxLen = width - 1;
-    if ( maxLen <= 0 || static_cast<int>(s.size()) <= maxLen ) {
+    if ( maxLen <= 0 || static_cast<int>(s.size()) <= maxLen )
         return s;
-    }
-    if ( maxLen <= 3 ) {
+
+    if ( maxLen <= 3 )
         return s.substr(0, static_cast<size_t>(maxLen));
-    }
+
     return s.substr(0, static_cast<size_t>(maxLen - 3)) + "...";
 }
 
@@ -88,7 +87,8 @@ splitArgs ( const std::string & input )
         }
     };
 
-    for ( char c : input ) {
+    for ( char c : input )
+    {
         if ( escape ) {
             cur.push_back(c);
             escape = false;
@@ -100,7 +100,8 @@ splitArgs ( const std::string & input )
             continue;
         }
 
-        if ( mode == Mode::Normal ) {
+        if ( mode == Mode::Normal )
+        {
             if ( c == '\'' ) {
                 mode = Mode::SingleQuote;
                 continue;
@@ -114,14 +115,17 @@ splitArgs ( const std::string & input )
                 continue;
             }
             cur.push_back(c);
-        } else if ( mode == Mode::SingleQuote ) {
+        }
+        else if ( mode == Mode::SingleQuote )
+        {
             if ( c == '\'' ) {
                 mode = Mode::Normal;
                 continue;
             }
             cur.push_back(c);
-        } else {
-            // DoubleQuote
+        }
+        else
+        {
             if ( c == '"' ) {
                 mode = Mode::Normal;
                 continue;
@@ -136,6 +140,7 @@ splitArgs ( const std::string & input )
 
 } // namespace
 
+
 namespace gkhextrace {
 
 
@@ -143,9 +148,9 @@ class GkHexTraceApp final : public hexes::HexApp
 {
   public:
 
-
-    GkHexTraceApp(std::string gktracePath, std::vector<std::string> gktraceArgs)
-      : _gktracePath(std::move(gktracePath)), _gktraceArgs(std::move(gktraceArgs))
+    GkHexTraceApp ( std::string gktracePath, std::vector<std::string> gktraceArgs )
+      : _gktracePath(std::move(gktracePath)), 
+        _gktraceArgs(std::move(gktraceArgs))
     {}
 
 
@@ -224,11 +229,11 @@ class GkHexTraceApp final : public hexes::HexApp
         syncMainFocusIndicator();
         this->timeout(100);
 
-        if ( ! _gktraceArgs.empty() ) {
+        if ( ! _gktraceArgs.empty() )
             startChild();
-        } else if ( auto * p = currentCapturePanel() ) {
+        else if ( auto * p = currentCapturePanel() )
             p->addText("-- idle: type gktrace args in the bottom console and press ENTER --");
-        }
+        
         renderStatus();
 
         bool quit = false;
@@ -378,17 +383,14 @@ class GkHexTraceApp final : public hexes::HexApp
                 saveCurrentPanel();
                 renderStatus();
             } else if ( ch == KEY_UP ) {
-                if (auto* p = currentCapturePanel()) {
+                if ( auto * p = currentCapturePanel() )
                     p->scrollUp();
-                }
             } else if ( ch == KEY_DOWN ) {
-                if (auto* p = currentCapturePanel()) {
+                if  (auto * p = currentCapturePanel() )
                     p->scrollDown();
-                }
             } else if ( ch == 'c' || ch == 'C' ) {
-                if (auto* p = currentCapturePanel()) {
+                if ( auto * p = currentCapturePanel() )
                     p->clear();
-                }
             }
         }
     }
@@ -415,9 +417,8 @@ class GkHexTraceApp final : public hexes::HexApp
         _consolePanel->erase();
         _consolePanel->moveWindow(ht - _consoleHeight, 0);
         _consolePanel->setText(_prompt);
-        if ( _consoleInput ) {
+        if ( _consoleInput )
             _consoleInput->setPrefix(_prompt);
-        }
 
         //this->print(0, 1, std::string("  gkhextrace  -  ") + GkHexVersion, hexes::HEX_RED, hexes::HEX_BOLD);
         updateMainTitles();
@@ -440,7 +441,7 @@ class GkHexTraceApp final : public hexes::HexApp
         const pid_t target = (_childHasOwnPgrp ? -_childPid : _childPid);
         ::kill(target, SIGINT);
 
-        if ( auto* p = currentCapturePanel() )
+        if ( auto * p = currentCapturePanel() )
             p->addText("-- interrupt (SIGINT) sent --");
     }
 
@@ -644,7 +645,7 @@ class GkHexTraceApp final : public hexes::HexApp
             return;
 
         int pipefd[2] = {-1, -1};
-        if (pipe(pipefd) != 0) {
+        if ( pipe(pipefd) != 0 ) {
             if ( _statusPanel )
                 _statusPanel->addText(std::string("pipe() failed: ") + std::strerror(errno));
             return;
@@ -693,7 +694,7 @@ class GkHexTraceApp final : public hexes::HexApp
         _stopReader.store(false);
         _reader = std::thread([this]() { readerLoop(); });
 
-        if ( auto* p = currentCapturePanel() )
+        if ( auto * p = currentCapturePanel() )
             p->addText(std::string("-- started: ") + joinCommand(_gktracePath, _gktraceArgs));
     }
 
@@ -744,7 +745,7 @@ class GkHexTraceApp final : public hexes::HexApp
                 while ( true )
                 {
                     const size_t nl = carry.find('\n', pos);
-                    if (nl == std::string::npos) {
+                    if ( nl == std::string::npos ) {
                         carry.erase(0, pos);
                         break;
                     }

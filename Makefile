@@ -1,6 +1,7 @@
 # gktrace Makefile
 NEED_SOCKET = 1
 NEED_TCANETPP = 1
+NEED_OPENSSL = 1
 
 ifdef USE_PTHREADS
 NEED_PTHREADS = 1
@@ -13,19 +14,19 @@ endif
 ifdef TCAMAKE_DEBUG
 OPT_FLAGS = -g
 else
-OPT_FLAGS =	-O2
+OPT_FLAGS = -O2
 endif
 
-INCLUDES =  -I.
+INCLUDES = -I.
 LIBS=
-CXXFLAGS=   -std=c++23
+CXXFLAGS = -std=c++23
 
-GKTRACE =	gktrace
+GKTRACE  = gktrace
 
-BIN =		$(GKTRACE)
-OBJS =		src/gktrace.o
-ALL_OBJS =	$(OBJS) $(COBJS)
-ALL_BINS =	$(BIN)
+BIN      = $(GKTRACE)
+OBJS     = src/gktrace.o
+ALL_OBJS = $(OBJS) $(COBJS)
+ALL_BINS = $(BIN)
 
 
 ifeq ($(TCAMAKE_HOME),)
@@ -41,6 +42,10 @@ gktrace: $(OBJS)
 	$(make-cxxbin-rule)
 	@echo
 
+gkhextrace: gktrace
+	( make -f Makefile.hexes )
+	@echo
+
 clean:
 	$(RM) $(ALL_OBJS) \
 	*.d *.D *.o src/*.d src/*.D src/*.bd src/*.o
@@ -48,6 +53,7 @@ clean:
 
 distclean: clean
 	$(RM) $(ALL_BINS)
+	( $(MAKE) -f Makefile.hexes distclean )
 	@echo
 
 dist:
