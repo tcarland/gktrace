@@ -40,15 +40,15 @@ joinCommand ( const std::string & exe, const std::vector<std::string> & args )
 {
     std::ostringstream oss;
     oss << exe;
-    for ( const auto & a : args ) {
+    for ( const auto & a : args )
+    {
         oss << ' ';
-        // lightweight quoting for display only
-        if ( a.find(' ') != std::string::npos ) {
+        if ( a.find(' ') != std::string::npos )
             oss << '"' << a << '"';
-        } else {
+        else
             oss << a;
-        }
     }
+
     return oss.str();
 }
 
@@ -88,7 +88,8 @@ splitArgs ( const std::string & input )
         }
     };
 
-    for ( char c : input ) {
+    for ( char c : input )
+    {
         if ( escape ) {
             cur.push_back(c);
             escape = false;
@@ -105,7 +106,7 @@ splitArgs ( const std::string & input )
                 mode = Mode::SingleQuote;
                 continue;
             }
-            if ( c == '\"' ) {
+            if ( c == '"' ) {
                 mode = Mode::DoubleQuote;
                 continue;
             }
@@ -143,9 +144,9 @@ class GkHexTraceApp final : public hexes::HexApp
 {
   public:
 
-
-    GkHexTraceApp(std::string gktracePath, std::vector<std::string> gktraceArgs)
-      : _gktracePath(std::move(gktracePath)), _gktraceArgs(std::move(gktraceArgs))
+    GkHexTraceApp ( std::string gktracePath, std::vector<std::string> gktraceArgs )
+      : _gktracePath(std::move(gktracePath)),
+        _gktraceArgs(std::move(gktraceArgs))
     {}
 
 
@@ -233,7 +234,6 @@ class GkHexTraceApp final : public hexes::HexApp
 
         bool quit = false;
         bool wcmd = false;
-
         while ( ! quit )
         {
             if ( g_sigintRequested ) {
@@ -378,15 +378,15 @@ class GkHexTraceApp final : public hexes::HexApp
                 saveCurrentPanel();
                 renderStatus();
             } else if ( ch == KEY_UP ) {
-                if (auto* p = currentCapturePanel()) {
+                if ( auto * p = currentCapturePanel() ) {
                     p->scrollUp();
                 }
             } else if ( ch == KEY_DOWN ) {
-                if (auto* p = currentCapturePanel()) {
+                if ( auto * p = currentCapturePanel() ) {
                     p->scrollDown();
                 }
             } else if ( ch == 'c' || ch == 'C' ) {
-                if (auto* p = currentCapturePanel()) {
+                if ( auto * p = currentCapturePanel() ) {
                     p->clear();
                 }
             }
@@ -415,11 +415,13 @@ class GkHexTraceApp final : public hexes::HexApp
         _consolePanel->erase();
         _consolePanel->moveWindow(ht - _consoleHeight, 0);
         _consolePanel->setText(_prompt);
-        if ( _consoleInput ) {
-            _consoleInput->setPrefix(_prompt);
-        }
 
-        //this->print(0, 1, std::string("  gkhextrace  -  ") + GkHexVersion, hexes::HEX_RED, hexes::HEX_BOLD);
+        if ( _consoleInput )
+            _consoleInput->setPrefix(_prompt);
+
+        this->print(0, 1, std::string("  gktrace_hexes  -  libhexes ") + 
+            LIBHEXES_VERSION, hexes::HEX_RED, hexes::HEX_BOLD);
+        
         updateMainTitles();
     }
 
@@ -440,7 +442,7 @@ class GkHexTraceApp final : public hexes::HexApp
         const pid_t target = (_childHasOwnPgrp ? -_childPid : _childPid);
         ::kill(target, SIGINT);
 
-        if ( auto* p = currentCapturePanel() )
+        if ( auto * p = currentCapturePanel() )
             p->addText("-- interrupt (SIGINT) sent --");
     }
 
@@ -553,7 +555,7 @@ class GkHexTraceApp final : public hexes::HexApp
         if ( ! tokens.empty() && (tokens[0] == "gktrace" || tokens[0].ends_with("/gktrace")) )
             tokens.erase(tokens.begin());
 
-        if ( auto* p = currentCapturePanel() )
+        if ( auto * p = currentCapturePanel() )
             p->addText(std::string("-- exec: ") + joinCommand(_gktracePath, tokens));
 
         restartChild(tokens);
@@ -606,7 +608,7 @@ class GkHexTraceApp final : public hexes::HexApp
         if ( ! p )
             return;
 
-        _statusPanel->addText("-- saving current panel --");
+        _statusPanel->addText("-- Saving current output --");
 
         hexes::HexDialog d("save", hexes::HexString("Save panel output", hexes::HEX_CYAN, hexes::HEX_BOLD));
         d.setDrawTitle(false);
@@ -623,11 +625,12 @@ class GkHexTraceApp final : public hexes::HexApp
 
         std::ofstream ofs(out, std::ios::out | std::ios::trunc);
         if ( ! ofs ) {
-            _statusPanel->addText(std::string("save failed: ") + std::strerror(errno));
+            if ( _statusPanel )
+                _statusPanel->addText(std::string("save failed: ") + std::strerror(errno));
             return;
         }
 
-        for ( const auto & hx : p->getTextList() )
+        for ( const auto& hx : p->getTextList() )
             ofs << hx.str() << "\n";
 
         if ( _statusPanel )
@@ -644,7 +647,7 @@ class GkHexTraceApp final : public hexes::HexApp
             return;
 
         int pipefd[2] = {-1, -1};
-        if (pipe(pipefd) != 0) {
+        if ( pipe(pipefd) != 0 ) {
             if ( _statusPanel )
                 _statusPanel->addText(std::string("pipe() failed: ") + std::strerror(errno));
             return;
@@ -693,7 +696,7 @@ class GkHexTraceApp final : public hexes::HexApp
         _stopReader.store(false);
         _reader = std::thread([this]() { readerLoop(); });
 
-        if ( auto* p = currentCapturePanel() )
+        if ( auto * p = currentCapturePanel() )
             p->addText(std::string("-- started: ") + joinCommand(_gktracePath, _gktraceArgs));
     }
 
@@ -737,14 +740,15 @@ class GkHexTraceApp final : public hexes::HexApp
                 break;
 
             const ssize_t n = ::read(_childFd, buf.data(), buf.size());
-            if ( n > 0 ) {
+            if ( n > 0 )
+            {
                 carry.append(buf.data(), static_cast<size_t>(n));
 
                 size_t pos = 0;
                 while ( true )
                 {
                     const size_t nl = carry.find('\n', pos);
-                    if (nl == std::string::npos) {
+                    if ( nl == std::string::npos ) {
                         carry.erase(0, pos);
                         break;
                     }
@@ -807,8 +811,8 @@ class GkHexTraceApp final : public hexes::HexApp
     int _consoleHeight{4};
 
     pid_t _childPid{-1};
-    int _childFd{-1};
-    bool _childHasOwnPgrp{false};
+    int   _childFd{-1};
+    bool  _childHasOwnPgrp{false};
 
     std::thread _reader;
     std::atomic<bool> _stopReader{false};

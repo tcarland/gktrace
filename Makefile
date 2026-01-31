@@ -1,6 +1,7 @@
 # gktrace Makefile
 NEED_SOCKET = 1
 NEED_TCANETPP = 1
+NEED_OPENSSL = 1
 
 ifdef USE_PTHREADS
 NEED_PTHREADS = 1

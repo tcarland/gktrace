@@ -405,8 +405,8 @@ main ( int argc, char ** argv )
     sockaddr_t    csock;
     netudp_h      udph;
 
-    PathData    * udata   = NULL;
-    char        * wptr    = NULL;
+    PathData    * udata   = nullptr;
+    char        * wptr    = nullptr;
     bool          send    = true;
     bool          timeout = false;
     bool          pathd   = false;
