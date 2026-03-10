@@ -24,7 +24,7 @@
 
 namespace {
 
-const char* GkHexVersion = "v0.7.4";
+const char* GkHexVersion = "v0.8.0";
 
 volatile sig_atomic_t g_sigintRequested = 0;
 
