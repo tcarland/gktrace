@@ -55,7 +55,7 @@ using namespace tcanetpp;
 namespace gktrace {
 
 
-const char* Version = "v0.7.3";
+const char* Version = "v0.8.0";
 bool        Alarm   = false;
 int         Pid     = 0;
 
@@ -405,8 +405,8 @@ main ( int argc, char ** argv )
     sockaddr_t    csock;
     netudp_h      udph;
 
-    PathData    * udata   = NULL;
-    char        * wptr    = NULL;
+    PathData    * udata   = nullptr;
+    char        * wptr    = nullptr;
     bool          send    = true;
     bool          timeout = false;
     bool          pathd   = false;

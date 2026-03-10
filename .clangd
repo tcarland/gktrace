@@ -1,6 +1,8 @@
 CompileFlags:
   Add:
     - "--include-directory=./include"
+    - "--include-directory=../libhexes/include"
+    - "--include-directory=../tcanetpp/include"
     - "-xc++"
     - "-DUSE_LIBRT"
     - "-DUSE_PTHREADS"

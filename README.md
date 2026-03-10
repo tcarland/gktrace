@@ -70,3 +70,47 @@ source resources/release-mt.env
 cd ../gktrace
 make && make install
 ```
+
+## Build gktrace_hexes (ncurses UI)
+
+This repo also includes a second binary, `gktrace_hexes`, which uses the
+ncurses-based `libhexes` library (expected to be located at `../libhexes`).
+
+### Dependencies
+
+- `../libhexes` (built automatically by the UI Makefile)
+- ncurses development headers (e.g. `libncurses-dev`)
+
+### Build
+
+```bash
+cd ../gktrace
+make -f Makefile.hexes
+```
+
+### Run
+
+By default the UI runs `./gktrace` and streams its stdout/stderr into the
+currently active output panel.
+
+```bash
+./gktrace_hexes <gktrace-args...>
+```
+
+You can override the tracer binary path with `GKTRACE_BIN`:
+
+```bash
+GKTRACE_BIN=/usr/local/bin/gktrace ./gktrace_hexes <gktrace-args...>
+```
+
+### Keys
+
+- The bottom console accepts gktrace arguments; press ENTER to (re)start capture in the current output panel.
+- Press `:` to jump focus to the console.
+- Use `CTRL-w` then `UP/DOWN` to switch focus between windows.
+- `n`: create a new output panel (capture continues there)
+- `TAB` / `→`: next panel, `←`: previous panel
+- `s`: save current panel output to a file
+- `c`: clear current panel
+- `↑`/`↓`: scroll
+- `q`: quit
